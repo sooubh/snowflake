@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Alerts &amp; Notifications Center - SupplyGuard</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f9f506",
+                        "background-light": "#f8f8f5",
+                        "background-dark": "#23220f",
+                        "surface-light": "#ffffff",
+                        "surface-dark": "#2c2b13",
+                        "text-main": "#1c1c0d",
+                        "text-secondary": "#9e9d47",
+                    },
+                    fontFamily: {
+                        "display": ["Spline Sans", "sans-serif"],
+                        "body": ["Noto Sans", "sans-serif"],
+                    },
+                    borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom Scrollbar for cleaner look */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #e9e8ce;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #d4d3b5;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.filled {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-text-main dark:text-white font-display overflow-x-hidden transition-colors duration-200">
+<div class="flex h-screen w-full overflow-hidden">
+<!-- Sidebar -->
+<aside class="hidden lg:flex flex-col w-72 h-full border-r border-[#e9e8ce] dark:border-[#444320] bg-background-light dark:bg-background-dark flex-shrink-0">
+<div class="p-6 flex flex-col h-full justify-between">
+<div class="flex flex-col gap-8">
+<!-- Brand -->
+<div class="flex items-center gap-3 px-2">
+<div class="size-8 text-primary">
+<svg class="w-full h-full" fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M24 4H42V17.3333V30.6667H24V44H6V30.6667V17.3333H24V4Z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+<div class="flex flex-col">
+<h1 class="text-lg font-bold leading-tight tracking-[-0.015em]">SupplyGuard</h1>
+<p class="text-text-secondary text-xs">Admin Console</p>
+</div>
+</div>
+<!-- Navigation -->
+<nav class="flex flex-col gap-2">
+<a class="flex items-center gap-3 px-4 py-3 rounded-full hover:bg-black/5 dark:hover:bg-white/5 transition-colors group" href="#">
+<span class="material-symbols-outlined text-text-main dark:text-white/80">grid_view</span>
+<span class="text-sm font-medium">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-full hover:bg-black/5 dark:hover:bg-white/5 transition-colors group" href="#">
+<span class="material-symbols-outlined text-text-main dark:text-white/80">inventory_2</span>
+<span class="text-sm font-medium">Inventory</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-full bg-primary shadow-sm group" href="#">
+<span class="material-symbols-outlined filled text-black">notifications</span>
+<span class="text-sm font-bold text-black">Alerts</span>
+<span class="ml-auto bg-black text-white text-[10px] font-bold px-2 py-0.5 rounded-full">12</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-full hover:bg-black/5 dark:hover:bg-white/5 transition-colors group" href="#">
+<span class="material-symbols-outlined text-text-main dark:text-white/80">map</span>
+<span class="text-sm font-medium">Map</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-full hover:bg-black/5 dark:hover:bg-white/5 transition-colors group" href="#">
+<span class="material-symbols-outlined text-text-main dark:text-white/80">settings</span>
+<span class="text-sm font-medium">Settings</span>
+</a>
+</nav>
+</div>
+<!-- User Profile -->
+<div class="flex items-center gap-3 px-2 py-2 rounded-xl bg-surface-light dark:bg-surface-dark border border-[#e9e8ce] dark:border-[#444320]">
+<div class="bg-center bg-no-repeat bg-cover rounded-full size-10" data-alt="Portrait of admin user smiling" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCpdB7FZKFzkKMS1H8frymtDFnUey4VoiHxd8YtujMxw9i7J5PVIJ16GraaeoV1qQH-m76E_E1CsxfRQrTwSvYzrf8xOlusyf0YsO0KN-lW9pVF7H45Y387pR-9ZhYwVCU1KD_gQU66KPgUfqn_ShHGdEoX9yPNd7pX5OsFvfnbYE-_4UfTKy7lwqgq4zFXSD-bt-soTH15ywPPRHxbLxQa_Iki6vamHpJtMtaWy3erb_bSs80faRG39ugJo3B0AfX2z0ZACf3Ebfk");'></div>
+<div class="flex flex-col">
+<span class="text-sm font-bold">Dr. Sarah K.</span>
+<span class="text-xs text-text-secondary">Logistics Lead</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 flex flex-col h-full overflow-hidden bg-[#fcfcf8] dark:bg-[#1a190b]">
+<!-- Top Header -->
+<header class="h-18 flex items-center justify-between px-6 py-4 border-b border-[#f4f4e6] dark:border-[#2c2b13] bg-background-light dark:bg-background-dark shrink-0">
+<div class="flex items-center gap-4 lg:hidden">
+<button class="p-2 -ml-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<div class="size-6 text-primary">
+<svg class="w-full h-full" fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M24 4H42V17.3333V30.6667H24V44H6V30.6667V17.3333H24V4Z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+</div>
+<div class="hidden md:flex flex-1 max-w-xl mx-auto">
+<label class="flex w-full items-center rounded-xl bg-[#f4f4e6] dark:bg-[#2c2b13] h-11 px-4 gap-3 focus-within:ring-2 ring-primary/50 transition-all">
+<span class="material-symbols-outlined text-text-secondary">search</span>
+<input class="flex-1 bg-transparent border-none focus:ring-0 text-text-main dark:text-white placeholder:text-text-secondary text-sm font-normal" placeholder="Search alerts, items, or locations..."/>
+</label>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-green-100 dark:bg-green-900/30 border border-green-200 dark:border-green-800">
+<div class="size-2 rounded-full bg-green-500 animate-pulse"></div>
+<span class="text-xs font-bold text-green-800 dark:text-green-300">System Online</span>
+</div>
+<button class="relative p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined">help</span>
+</button>
+<button class="relative p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined">dark_mode</span>
+</button>
+</div>
+</header>
+<!-- Scrollable Content Area -->
+<div class="flex-1 overflow-y-auto">
+<div class="max-w-[1200px] mx-auto p-4 md:p-8 flex flex-col gap-6">
+<!-- Page Heading -->
+<div class="flex flex-col gap-2">
+<h1 class="text-3xl md:text-4xl font-black tracking-[-0.033em] text-text-main dark:text-white">Alerts &amp; Notifications Center</h1>
+<p class="text-text-secondary dark:text-gray-400 text-base max-w-2xl">Monitor critical stock levels and supply chain disruptions in real-time across all regions.</p>
+</div>
+<!-- AI Insight Action Panel -->
+<div class="rounded-2xl border border-yellow-200 dark:border-yellow-900/50 bg-yellow-50/50 dark:bg-yellow-900/10 p-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+<div class="flex gap-4 items-start">
+<div class="p-2.5 rounded-xl bg-primary text-black shrink-0">
+<span class="material-symbols-outlined filled">auto_awesome</span>
+</div>
+<div class="flex flex-col gap-1">
+<h3 class="font-bold text-lg leading-tight">AI Insight: 3 Critical Stock-outs Predicted</h3>
+<p class="text-text-secondary dark:text-gray-300 text-sm">Predictive analysis suggests shortages within 48h at <span class="font-medium text-text-main dark:text-white">Downtown Hospital</span> based on current consumption rates.</p>
+</div>
+</div>
+<button class="shrink-0 h-10 px-6 rounded-full bg-primary text-black text-sm font-bold hover:bg-[#e6e205] transition-colors flex items-center gap-2">
+<span>View Analysis</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</div>
+<!-- Main Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+<!-- Left Column: Filter & Feed (8 Cols) -->
+<div class="lg:col-span-8 flex flex-col gap-6">
+<!-- Filters -->
+<div class="flex flex-wrap gap-3 items-center pb-2 border-b border-[#f4f4e6] dark:border-[#2c2b13]">
+<button class="flex items-center gap-2 h-9 px-4 rounded-full bg-black text-white dark:bg-white dark:text-black font-medium text-sm transition-transform active:scale-95 shadow-lg">
+                                    All Alerts
+                                </button>
+<button class="flex items-center gap-2 h-9 px-4 rounded-full bg-[#f4f4e6] dark:bg-[#2c2b13] hover:bg-[#e9e8ce] dark:hover:bg-[#444320] text-text-main dark:text-white font-medium text-sm transition-colors border border-transparent hover:border-[#d4d3b5]">
+<span class="size-2 rounded-full bg-red-500"></span>
+                                    Critical
+                                </button>
+<button class="flex items-center gap-2 h-9 px-4 rounded-full bg-[#f4f4e6] dark:bg-[#2c2b13] hover:bg-[#e9e8ce] dark:hover:bg-[#444320] text-text-main dark:text-white font-medium text-sm transition-colors border border-transparent hover:border-[#d4d3b5]">
+<span class="size-2 rounded-full bg-orange-400"></span>
+                                    Warning
+                                </button>
+<button class="flex items-center gap-2 h-9 px-4 rounded-full bg-[#f4f4e6] dark:bg-[#2c2b13] hover:bg-[#e9e8ce] dark:hover:bg-[#444320] text-text-main dark:text-white font-medium text-sm transition-colors border border-transparent hover:border-[#d4d3b5]">
+                                    Unread Only
+                                </button>
+<div class="w-px h-6 bg-[#e9e8ce] dark:bg-[#444320] mx-1"></div>
+<button class="flex items-center gap-2 h-9 pl-4 pr-3 rounded-full bg-[#f4f4e6] dark:bg-[#2c2b13] text-text-main dark:text-white font-medium text-sm transition-colors group">
+                                    Region: All
+                                    <span class="material-symbols-outlined text-[18px] text-text-secondary group-hover:text-text-main">keyboard_arrow_down</span>
+</button>
+</div>
+<!-- Timeline Feed -->
+<div class="flex flex-col gap-4 relative">
+<div class="absolute left-6 top-6 bottom-6 w-0.5 bg-[#f4f4e6] dark:bg-[#2c2b13] -z-10"></div>
+<!-- Date Header -->
+<div class="flex items-center gap-4">
+<span class="text-xs font-bold uppercase tracking-wider text-text-secondary bg-[#fcfcf8] dark:bg-[#1a190b] py-1 pr-2">Today</span>
+<div class="h-px bg-[#f4f4e6] dark:bg-[#2c2b13] flex-1"></div>
+</div>
+<!-- Alert Card: Critical -->
+<div class="flex gap-4 group">
+<div class="mt-4 relative shrink-0">
+<div class="size-12 rounded-full bg-white dark:bg-[#2c2b13] border-4 border-[#fcfcf8] dark:border-[#1a190b] flex items-center justify-center shadow-sm relative z-10">
+<span class="material-symbols-outlined text-red-500 filled">dangerous</span>
+</div>
+</div>
+<div class="flex-1 bg-white dark:bg-[#23220f] border-l-4 border-primary rounded-xl rounded-l-md shadow-sm p-5 hover:shadow-md transition-shadow relative overflow-hidden">
+<div class="absolute top-0 right-0 p-4">
+<span class="text-xs font-medium text-text-secondary">Just now</span>
+</div>
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-2">
+<h3 class="font-bold text-lg text-text-main dark:text-white">Amoxicillin 500mg</h3>
+<span class="px-2 py-0.5 rounded-md bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 text-xs font-bold uppercase tracking-wide">Critical</span>
+</div>
+<div class="flex items-center gap-2 text-text-secondary text-sm">
+<span class="material-symbols-outlined text-[16px]">location_on</span>
+                                                    Downtown Hospital, Ward 3
+                                                </div>
+</div>
+<div class="flex items-center gap-2">
+<div class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-50 dark:bg-red-900/10 border border-red-100 dark:border-red-900/30 text-red-600 dark:text-red-400 font-bold text-sm">
+<span class="material-symbols-outlined text-[18px]">timer</span>
+                                                    24h Left
+                                                </div>
+</div>
+</div>
+<div class="mt-4 pt-4 border-t border-[#f4f4e6] dark:border-[#2c2b13] flex flex-wrap gap-3">
+<button class="h-9 px-5 rounded-full bg-primary text-black text-sm font-bold hover:bg-[#e6e205] transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">local_shipping</span>
+                                                Approve Transfer
+                                            </button>
+<button class="h-9 px-5 rounded-full bg-transparent border border-[#e9e8ce] dark:border-[#444320] text-text-main dark:text-white text-sm font-medium hover:bg-[#f4f4e6] dark:hover:bg-[#2c2b13] transition-colors">
+                                                Contact Admin
+                                            </button>
+</div>
+</div>
+</div>
+<!-- Alert Card: Warning -->
+<div class="flex gap-4 group">
+<div class="mt-4 relative shrink-0">
+<div class="size-12 rounded-full bg-white dark:bg-[#2c2b13] border-4 border-[#fcfcf8] dark:border-[#1a190b] flex items-center justify-center shadow-sm relative z-10">
+<span class="material-symbols-outlined text-orange-400 filled">warning</span>
+</div>
+</div>
+<div class="flex-1 bg-white dark:bg-[#23220f] border border-[#e9e8ce] dark:border-[#444320] rounded-xl shadow-sm p-5 hover:shadow-md transition-shadow">
+<div class="absolute top-5 right-5">
+<span class="text-xs font-medium text-text-secondary">09:00 AM</span>
+</div>
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-2">
+<h3 class="font-bold text-lg text-text-main dark:text-white">Rice Supply (Sacks)</h3>
+<span class="px-2 py-0.5 rounded-md bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 text-xs font-bold uppercase tracking-wide">Low Stock</span>
+</div>
+<div class="flex items-center gap-2 text-text-secondary text-sm">
+<span class="material-symbols-outlined text-[16px]">location_on</span>
+                                                    Sector 4 Relief Camp
+                                                </div>
+</div>
+<div class="flex items-center gap-2">
+<div class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-orange-50 dark:bg-orange-900/10 border border-orange-100 dark:border-orange-900/30 text-orange-600 dark:text-orange-400 font-bold text-sm">
+<span class="material-symbols-outlined text-[18px]">hourglass_bottom</span>
+                                                    2 Days
+                                                </div>
+</div>
+</div>
+<div class="mt-4 pt-4 border-t border-[#f4f4e6] dark:border-[#2c2b13] flex flex-wrap gap-3">
+<button class="h-9 px-5 rounded-full bg-black dark:bg-white text-white dark:text-black text-sm font-bold hover:bg-black/80 dark:hover:bg-white/90 transition-colors">
+                                                Reorder
+                                            </button>
+<button class="h-9 px-5 rounded-full bg-transparent border border-[#e9e8ce] dark:border-[#444320] text-text-main dark:text-white text-sm font-medium hover:bg-[#f4f4e6] dark:hover:bg-[#2c2b13] transition-colors">
+                                                Snooze (1h)
+                                            </button>
+</div>
+</div>
+</div>
+<!-- Date Header -->
+<div class="flex items-center gap-4 mt-4">
+<span class="text-xs font-bold uppercase tracking-wider text-text-secondary bg-[#fcfcf8] dark:bg-[#1a190b] py-1 pr-2">Yesterday</span>
+<div class="h-px bg-[#f4f4e6] dark:bg-[#2c2b13] flex-1"></div>
+</div>
+<!-- Alert Card: Info/Expired -->
+<div class="flex gap-4 group opacity-75 hover:opacity-100 transition-opacity">
+<div class="mt-4 relative shrink-0">
+<div class="size-12 rounded-full bg-white dark:bg-[#2c2b13] border-4 border-[#fcfcf8] dark:border-[#1a190b] flex items-center justify-center shadow-sm relative z-10">
+<span class="material-symbols-outlined text-gray-400">inventory_2</span>
+</div>
+</div>
+<div class="flex-1 bg-white dark:bg-[#23220f] border border-[#e9e8ce] dark:border-[#444320] rounded-xl shadow-sm p-5">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-2">
+<h3 class="font-bold text-lg text-text-main dark:text-white">Tetanus Toxoid</h3>
+<span class="px-2 py-0.5 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 text-xs font-bold uppercase tracking-wide">Expired</span>
+</div>
+<div class="flex items-center gap-2 text-text-secondary text-sm">
+<span class="material-symbols-outlined text-[16px]">location_on</span>
+                                                    Central Warehouse, Shelf B2
+                                                </div>
+</div>
+</div>
+<div class="mt-4 pt-4 border-t border-[#f4f4e6] dark:border-[#2c2b13] flex flex-wrap gap-3">
+<button class="h-9 px-5 rounded-full bg-transparent border border-[#e9e8ce] dark:border-[#444320] text-text-secondary text-sm font-medium hover:bg-[#f4f4e6] dark:hover:bg-[#2c2b13] transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">check_circle</span>
+                                                Mark Resolved
+                                            </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Channels & Widgets (4 Cols) -->
+<div class="lg:col-span-4 flex flex-col gap-6 sticky top-6">
+<!-- Channels Widget -->
+<div class="bg-white dark:bg-[#23220f] rounded-2xl border border-[#e9e8ce] dark:border-[#444320] p-6 shadow-sm">
+<div class="flex items-center justify-between mb-6">
+<h3 class="font-bold text-lg">Notification Channels</h3>
+<button class="text-xs font-bold text-primary bg-black px-2 py-1 rounded-md">Edit</button>
+</div>
+<div class="flex flex-col gap-4">
+<!-- Channel Item -->
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="size-8 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center text-green-600 dark:text-green-400">
+<span class="material-symbols-outlined text-[20px]">chat</span>
+</div>
+<div class="flex flex-col">
+<span class="text-sm font-bold">WhatsApp</span>
+<span class="text-xs text-text-secondary">4 Admins</span>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<!-- Channel Item -->
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="size-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400">
+<span class="material-symbols-outlined text-[20px]">sms</span>
+</div>
+<div class="flex flex-col">
+<span class="text-sm font-bold">SMS</span>
+<span class="text-xs text-text-secondary">Urgent only</span>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<!-- Channel Item -->
+<div class="flex items-center justify-between opacity-60">
+<div class="flex items-center gap-3">
+<div class="size-8 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-600 dark:text-gray-400">
+<span class="material-symbols-outlined text-[20px]">mail</span>
+</div>
+<div class="flex flex-col">
+<span class="text-sm font-bold">Email</span>
+<span class="text-xs text-text-secondary">Weekly Digest</span>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox" value=""/>
+<div class="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+</div>
+</div>
+<!-- Map Preview Widget -->
+<div class="bg-white dark:bg-[#23220f] rounded-2xl border border-[#e9e8ce] dark:border-[#444320] p-4 shadow-sm flex flex-col gap-4">
+<div class="flex items-center justify-between">
+<h3 class="font-bold text-base">Impact Map</h3>
+<button class="text-primary hover:text-[#c4c105]">
+<span class="material-symbols-outlined">open_in_full</span>
+</button>
+</div>
+<div class="relative w-full aspect-video rounded-xl overflow-hidden bg-gray-100">
+<div class="absolute inset-0 bg-cover bg-center" data-alt="Map showing alert hotspots in city districts" data-location="City Map Overlay" style='background-image: url("https://placeholder.pics/svg/300"); filter: grayscale(100%); opacity: 0.6;'></div>
+<!-- Map Pins -->
+<div class="absolute top-1/2 left-1/3 size-3 bg-red-500 rounded-full border-2 border-white shadow-lg animate-bounce"></div>
+<div class="absolute top-1/3 right-1/4 size-3 bg-orange-400 rounded-full border-2 border-white shadow-lg"></div>
+</div>
+<div class="flex justify-between text-xs text-text-secondary">
+<span>2 Locations Critical</span>
+<span>Updated 5m ago</span>
+</div>
+</div>
+<!-- Quick Support -->
+<div class="bg-primary/10 rounded-2xl p-4 flex items-center gap-3">
+<div class="size-8 bg-primary rounded-full flex items-center justify-center text-black">
+<span class="material-symbols-outlined text-[20px]">support_agent</span>
+</div>
+<div class="flex flex-col">
+<span class="text-sm font-bold text-text-main dark:text-white">Need help resolving?</span>
+<a class="text-xs underline text-text-secondary hover:text-text-main" href="#">Contact Supply Chain HQ</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

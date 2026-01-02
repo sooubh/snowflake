@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Reorder &amp; Priority Recommendations - Supply Chain AI</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@300;400;500;600;700&amp;family=Noto+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f9f506",
+                        "background-light": "#f8f8f5",
+                        "background-dark": "#23220f",
+                        "surface-light": "#ffffff",
+                        "surface-dark": "#2d2c1b",
+                        "text-main": "#1c1c0d",
+                        "text-sub": "#5c5c4f",
+                        "border-color": "#e9e8ce"
+                    },
+                    fontFamily: {
+                        "display": ["Spline Sans", "sans-serif"],
+                        "body": ["Noto Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "1rem",
+                        "lg": "1.5rem",
+                        "xl": "2rem",
+                        "2xl": "3rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: "Spline Sans", sans-serif;
+        }
+        /* Custom scrollbar for table */
+        .custom-scrollbar::-webkit-scrollbar {
+            height: 8px;
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background-color: #e9e8ce;
+            border-radius: 20px;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-text-main min-h-screen flex flex-col font-display selection:bg-primary selection:text-black">
+<!-- Top Navigation -->
+<header class="sticky top-0 z-30 w-full bg-surface-light/90 dark:bg-surface-dark/90 backdrop-blur-md border-b border-border-color px-4 py-3 lg:px-8">
+<div class="mx-auto max-w-7xl flex items-center justify-between gap-4">
+<div class="flex items-center gap-4 text-text-main">
+<div class="size-8 text-primary bg-black rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-xl">all_inclusive</span>
+</div>
+<h2 class="text-lg font-bold leading-tight tracking-tight">Supply Chain AI</h2>
+</div>
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-text-sub hover:text-text-main text-sm font-medium transition-colors" href="#">Dashboard</a>
+<a class="text-text-sub hover:text-text-main text-sm font-medium transition-colors" href="#">Inventory</a>
+<a class="text-text-main text-sm font-bold border-b-2 border-primary pb-0.5" href="#">Reorder Recommendations</a>
+<a class="text-text-sub hover:text-text-main text-sm font-medium transition-colors" href="#">Reports</a>
+</nav>
+<div class="flex items-center gap-4">
+<button class="relative p-2 text-text-sub hover:bg-background-light rounded-full transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 size-2 bg-red-500 rounded-full"></span>
+</button>
+<div class="bg-center bg-no-repeat bg-cover rounded-full size-10 border border-border-color shadow-sm" data-alt="Profile picture of supply chain officer" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuABiTM07aXU_K_gPoBnyDTfLLuqadlMhpWX13LbPERjQuTGrEAjz3BP_d5b3Sk0Z-T91TxpCpjCkc3cnAA3z04yqY9H55up07Laq7rfhUm_1vRcYIHnu1bzUBz6vf8EgzWZyNNbZYAvMpfOv6Hla_lY5j_fpsJh3Qlh_1KJ1m2TLgxA00UX_FY2jKpNQPPuQfGnirw9i48CND0KbdrmvhpZhBFMhdf6OMIIN2phc2VVukwInHfjeXanoxOBYsz2A0hzm7RV7brhqnw");'></div>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="flex-1 w-full max-w-7xl mx-auto px-4 lg:px-8 py-8 flex flex-col gap-6 pb-32">
+<!-- Header & Stats Section -->
+<div class="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+<div class="flex flex-col gap-2">
+<h1 class="text-3xl md:text-4xl font-black leading-tight tracking-tight text-text-main">Reorder &amp; Priority Recommendations</h1>
+<p class="text-text-sub text-base flex items-center gap-2">
+<span class="material-symbols-outlined text-lg">schedule</span>
+                    Last updated: Today, 09:41 AM
+                </p>
+</div>
+<!-- Key Metrics Cards -->
+<div class="flex flex-wrap gap-4 w-full lg:w-auto">
+<div class="flex-1 lg:flex-none min-w-[160px] bg-surface-light dark:bg-surface-dark rounded-xl p-4 border border-border-color shadow-sm">
+<div class="flex items-center justify-between mb-2">
+<p class="text-text-sub text-sm font-medium">Items at Risk</p>
+<span class="material-symbols-outlined text-red-500 text-xl">warning</span>
+</div>
+<p class="text-3xl font-bold text-text-main">142</p>
+<p class="text-xs text-red-600 font-medium mt-1">+12 since yesterday</p>
+</div>
+<div class="flex-1 lg:flex-none min-w-[160px] bg-surface-light dark:bg-surface-dark rounded-xl p-4 border border-border-color shadow-sm">
+<div class="flex items-center justify-between mb-2">
+<p class="text-text-sub text-sm font-medium">Est. Stock-out Value</p>
+<span class="material-symbols-outlined text-text-sub text-xl">payments</span>
+</div>
+<p class="text-3xl font-bold text-text-main">$45,200</p>
+<p class="text-xs text-text-sub mt-1">Potential loss prevention</p>
+</div>
+</div>
+</div>
+<!-- Filters & Search Bar -->
+<div class="bg-surface-light dark:bg-surface-dark rounded-2xl border border-border-color p-4 shadow-sm flex flex-col md:flex-row gap-4 items-center justify-between sticky top-[73px] z-20">
+<!-- Search -->
+<div class="relative w-full md:w-96 group">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-text-sub">search</span>
+</div>
+<input class="block w-full pl-10 pr-3 py-2.5 border-none rounded-xl bg-background-light dark:bg-background-dark text-text-main placeholder-text-sub focus:ring-2 focus:ring-primary focus:bg-white dark:focus:bg-black transition-all" placeholder="Search by SKU, Item Name, or Location..." type="text"/>
+</div>
+<!-- Chips Filters -->
+<div class="flex items-center gap-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 custom-scrollbar">
+<button class="flex items-center gap-2 px-4 py-2 rounded-full bg-primary text-black font-semibold text-sm whitespace-nowrap shadow-sm ring-2 ring-primary ring-offset-2 ring-offset-white dark:ring-offset-surface-dark">
+<span class="material-symbols-outlined text-lg filled">dangerous</span>
+                    Critical Only
+                </button>
+<button class="flex items-center gap-2 px-4 py-2 rounded-full bg-background-light dark:bg-background-dark hover:bg-white dark:hover:bg-black border border-transparent hover:border-border-color text-text-main font-medium text-sm whitespace-nowrap transition-all">
+<span class="material-symbols-outlined text-lg">medical_services</span>
+                    Life-saving Drugs
+                </button>
+<button class="flex items-center gap-2 px-4 py-2 rounded-full bg-background-light dark:bg-background-dark hover:bg-white dark:hover:bg-black border border-transparent hover:border-border-color text-text-main font-medium text-sm whitespace-nowrap transition-all">
+<span class="material-symbols-outlined text-lg">timelapse</span>
+                    Low Lead-time
+                </button>
+<button class="flex items-center gap-2 px-4 py-2 rounded-full bg-background-light dark:bg-background-dark hover:bg-white dark:hover:bg-black border border-transparent hover:border-border-color text-text-main font-medium text-sm whitespace-nowrap transition-all">
+<span class="material-symbols-outlined text-lg">filter_list</span>
+                    More Filters
+                </button>
+</div>
+</div>
+<!-- Data Table Section -->
+<div class="bg-surface-light dark:bg-surface-dark rounded-3xl border border-border-color shadow-sm overflow-hidden">
+<div class="overflow-x-auto custom-scrollbar">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-background-light/50 dark:bg-background-dark/50 border-b border-border-color text-text-sub text-xs uppercase tracking-wider font-semibold">
+<th class="p-4 pl-6 w-12">
+<input class="rounded border-gray-300 text-black focus:ring-primary size-4" type="checkbox"/>
+</th>
+<th class="p-4 min-w-[200px]">Item Details</th>
+<th class="p-4 min-w-[180px]">Location</th>
+<th class="p-4">Risk Level</th>
+<th class="p-4 text-right">Suggested Qty</th>
+<th class="p-4 w-[200px]">Urgency Score</th>
+<th class="p-4 w-20 text-center">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-border-color">
+<!-- Row 1: Critical -->
+<tr class="group hover:bg-primary/5 transition-colors">
+<td class="p-4 pl-6">
+<input checked="" class="rounded border-gray-300 text-black focus:ring-primary size-4" type="checkbox"/>
+</td>
+<td class="p-4">
+<div class="flex flex-col">
+<span class="font-bold text-text-main">Amoxicillin 500mg</span>
+<span class="text-xs text-text-sub font-mono">SKU: AMX-500-TAB</span>
+</div>
+</td>
+<td class="p-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-text-sub text-lg">location_on</span>
+<span class="text-sm text-text-main">District Hospital - Alpha</span>
+</div>
+</td>
+<td class="p-4">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-primary text-black border border-black/10">
+<span class="size-1.5 rounded-full bg-red-600 animate-pulse"></span>
+                                    CRITICAL
+                                </span>
+</td>
+<td class="p-4 text-right font-mono font-medium">5,000</td>
+<td class="p-4">
+<div class="flex flex-col gap-1">
+<div class="flex justify-between text-xs font-bold">
+<span class="text-red-600">98/100</span>
+<span class="text-text-sub">Very High</span>
+</div>
+<div class="h-2 w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-r from-yellow-400 to-red-500 w-[98%] rounded-full"></div>
+</div>
+</div>
+</td>
+<td class="p-4 text-center">
+<button class="size-8 inline-flex items-center justify-center rounded-full hover:bg-background-light dark:hover:bg-background-dark text-text-sub hover:text-text-main transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 2: Critical -->
+<tr class="group hover:bg-primary/5 transition-colors">
+<td class="p-4 pl-6">
+<input class="rounded border-gray-300 text-black focus:ring-primary size-4" type="checkbox"/>
+</td>
+<td class="p-4">
+<div class="flex flex-col">
+<span class="font-bold text-text-main">Insulin Glargine</span>
+<span class="text-xs text-text-sub font-mono">SKU: INS-GLA-10ML</span>
+</div>
+</td>
+<td class="p-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-text-sub text-lg">location_on</span>
+<span class="text-sm text-text-main">Community Health Ctr B</span>
+</div>
+</td>
+<td class="p-4">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-primary text-black border border-black/10">
+<span class="size-1.5 rounded-full bg-red-600 animate-pulse"></span>
+                                    CRITICAL
+                                </span>
+</td>
+<td class="p-4 text-right font-mono font-medium">200</td>
+<td class="p-4">
+<div class="flex flex-col gap-1">
+<div class="flex justify-between text-xs font-bold">
+<span class="text-red-600">92/100</span>
+<span class="text-text-sub">High</span>
+</div>
+<div class="h-2 w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-r from-yellow-400 to-red-500 w-[92%] rounded-full"></div>
+</div>
+</div>
+</td>
+<td class="p-4 text-center">
+<button class="size-8 inline-flex items-center justify-center rounded-full hover:bg-background-light dark:hover:bg-background-dark text-text-sub hover:text-text-main transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 3: Warning -->
+<tr class="group hover:bg-primary/5 transition-colors">
+<td class="p-4 pl-6">
+<input class="rounded border-gray-300 text-black focus:ring-primary size-4" type="checkbox"/>
+</td>
+<td class="p-4">
+<div class="flex flex-col">
+<span class="font-bold text-text-main">Surgical Gloves (M)</span>
+<span class="text-xs text-text-sub font-mono">SKU: GLV-SUR-MED</span>
+</div>
+</td>
+<td class="p-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-text-sub text-lg">location_on</span>
+<span class="text-sm text-text-main">Disaster Relief Camp 4</span>
+</div>
+</td>
+<td class="p-4">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 border border-orange-200 dark:border-orange-800">
+<span class="size-1.5 rounded-full bg-orange-500"></span>
+                                    WARNING
+                                </span>
+</td>
+<td class="p-4 text-right font-mono font-medium">10,000</td>
+<td class="p-4">
+<div class="flex flex-col gap-1">
+<div class="flex justify-between text-xs font-bold">
+<span class="text-orange-600 dark:text-orange-400">75/100</span>
+<span class="text-text-sub">Moderate</span>
+</div>
+<div class="h-2 w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+<div class="h-full bg-orange-400 w-[75%] rounded-full"></div>
+</div>
+</div>
+</td>
+<td class="p-4 text-center">
+<button class="size-8 inline-flex items-center justify-center rounded-full hover:bg-background-light dark:hover:bg-background-dark text-text-sub hover:text-text-main transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 4: Warning -->
+<tr class="group hover:bg-primary/5 transition-colors">
+<td class="p-4 pl-6">
+<input class="rounded border-gray-300 text-black focus:ring-primary size-4" type="checkbox"/>
+</td>
+<td class="p-4">
+<div class="flex flex-col">
+<span class="font-bold text-text-main">Paracetamol Syrup</span>
+<span class="text-xs text-text-sub font-mono">SKU: PCM-SYR-100</span>
+</div>
+</td>
+<td class="p-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-text-sub text-lg">location_on</span>
+<span class="text-sm text-text-main">Rural PHC - West</span>
+</div>
+</td>
+<td class="p-4">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 border border-orange-200 dark:border-orange-800">
+<span class="size-1.5 rounded-full bg-orange-500"></span>
+                                    WARNING
+                                </span>
+</td>
+<td class="p-4 text-right font-mono font-medium">450</td>
+<td class="p-4">
+<div class="flex flex-col gap-1">
+<div class="flex justify-between text-xs font-bold">
+<span class="text-orange-600 dark:text-orange-400">68/100</span>
+<span class="text-text-sub">Moderate</span>
+</div>
+<div class="h-2 w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+<div class="h-full bg-orange-400 w-[68%] rounded-full"></div>
+</div>
+</div>
+</td>
+<td class="p-4 text-center">
+<button class="size-8 inline-flex items-center justify-center rounded-full hover:bg-background-light dark:hover:bg-background-dark text-text-sub hover:text-text-main transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 5: Safe but Low -->
+<tr class="group hover:bg-primary/5 transition-colors">
+<td class="p-4 pl-6">
+<input class="rounded border-gray-300 text-black focus:ring-primary size-4" type="checkbox"/>
+</td>
+<td class="p-4">
+<div class="flex flex-col">
+<span class="font-bold text-text-main">Oral Rehydration Salts</span>
+<span class="text-xs text-text-sub font-mono">SKU: ORS-PKT-STD</span>
+</div>
+</td>
+<td class="p-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-text-sub text-lg">location_on</span>
+<span class="text-sm text-text-main">Warehouse 02</span>
+</div>
+</td>
+<td class="p-4">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 border border-green-200 dark:border-green-800">
+<span class="size-1.5 rounded-full bg-green-500"></span>
+                                    LOW STOCK
+                                </span>
+</td>
+<td class="p-4 text-right font-mono font-medium">5,000</td>
+<td class="p-4">
+<div class="flex flex-col gap-1">
+<div class="flex justify-between text-xs font-bold">
+<span class="text-green-600 dark:text-green-400">45/100</span>
+<span class="text-text-sub">Low</span>
+</div>
+<div class="h-2 w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+<div class="h-full bg-green-500 w-[45%] rounded-full"></div>
+</div>
+</div>
+</td>
+<td class="p-4 text-center">
+<button class="size-8 inline-flex items-center justify-center rounded-full hover:bg-background-light dark:hover:bg-background-dark text-text-sub hover:text-text-main transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination -->
+<div class="border-t border-border-color p-4 bg-background-light/30 dark:bg-background-dark/30 flex items-center justify-between">
+<span class="text-sm text-text-sub">Showing <span class="font-bold text-text-main">1-5</span> of <span class="font-bold text-text-main">142</span> items</span>
+<div class="flex items-center gap-2">
+<button class="size-8 flex items-center justify-center rounded-lg border border-border-color bg-white dark:bg-surface-dark text-text-sub hover:bg-background-light disabled:opacity-50">
+<span class="material-symbols-outlined text-sm">chevron_left</span>
+</button>
+<button class="size-8 flex items-center justify-center rounded-lg border border-border-color bg-white dark:bg-surface-dark text-text-sub hover:bg-background-light">
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+<!-- Sticky Floating Action Footer -->
+<div class="fixed bottom-0 left-0 right-0 z-40 p-4 lg:pb-8 flex justify-center pointer-events-none">
+<div class="pointer-events-auto bg-surface-dark text-white rounded-full shadow-2xl shadow-black/20 flex items-center justify-between px-2 py-2 pl-6 gap-6 max-w-4xl w-full border border-gray-700/50 backdrop-blur-xl">
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2">
+<span class="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-black text-xs font-bold">1</span>
+<span class="text-sm font-medium whitespace-nowrap hidden sm:inline">Item selected</span>
+</div>
+<div class="h-4 w-px bg-gray-600 hidden sm:block"></div>
+<div class="flex items-center gap-1">
+<button class="p-2 hover:bg-white/10 rounded-full transition-colors text-gray-300 hover:text-white group relative" title="Export to PDF">
+<span class="material-symbols-outlined text-xl">picture_as_pdf</span>
+</button>
+<button class="p-2 hover:bg-white/10 rounded-full transition-colors text-gray-300 hover:text-white" title="Export to CSV">
+<span class="material-symbols-outlined text-xl">csv</span>
+</button>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="px-5 py-2.5 rounded-full bg-white/10 hover:bg-white/20 text-white text-sm font-medium transition-colors border border-white/10 whitespace-nowrap">
+                    Mark Ordered
+                </button>
+<button class="px-6 py-2.5 rounded-full bg-primary hover:bg-[#eae605] text-black text-sm font-bold shadow-lg shadow-yellow-400/20 transition-all transform active:scale-95 flex items-center gap-2 whitespace-nowrap">
+                    Send to Procurement
+                    <span class="material-symbols-outlined text-lg">send</span>
+</button>
+</div>
+</div>
+</div>
+</body></html>

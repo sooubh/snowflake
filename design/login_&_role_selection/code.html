@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SupplyChain AI - Login</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+            extend: {
+                colors: {
+                "primary": "#f9f506",
+                "background-light": "#f8f8f5",
+                "background-dark": "#23220f",
+                "surface-light": "#f4f4e6",
+                "surface-dark": "#2e2d1a",
+                "text-main": "#1c1c0d",
+                "text-muted": "#9e9d47",
+                },
+                fontFamily: {
+                "display": ["Spline Sans", "Noto Sans", "sans-serif"]
+                },
+                borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+            },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar for clean look */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #e9e8ce;
+            border-radius: 4px;
+        }
+        .dark ::-webkit-scrollbar-thumb {
+            background: #444;
+        }
+        
+        /* Custom focus ring color to match primary */
+        .focus-ring:focus-within {
+            box-shadow: 0 0 0 2px #f9f506;
+        }
+    </style>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark text-text-main dark:text-white min-h-screen flex flex-col items-center justify-center p-4 selection:bg-primary selection:text-text-main transition-colors duration-200">
+<div class="w-full max-w-[1100px] flex flex-col lg:flex-row bg-white dark:bg-surface-dark rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-none overflow-hidden min-h-[640px]">
+<!-- Left Pane: Visual Storytelling -->
+<div class="relative w-full lg:w-1/2 bg-surface-light dark:bg-[#1a190b] flex flex-col justify-between p-8 lg:p-12 overflow-hidden group">
+<!-- Background Image -->
+<div class="absolute inset-0 w-full h-full bg-cover bg-center opacity-90 transition-transform duration-700 group-hover:scale-105" data-alt="Drone delivering medical supplies box in rural landscape" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDy0rLT2bCiMsNzUQn7wQB3sh3iHEU5ZD8PhuwH6SlYTT1g76j7_Dz38pTyTscUqDtiJ4dZ9I2xPxL2bMTyi_W5Fp8PrRGzbd43N2zVTiFkFwh7h0mPt9EIFy_kzxwFgPZLGXAsK-PAZ4xZ2lVpKd9vbrkPnKO_n2lzOa_dbBwJx-YaMEoMgjb50zQpxPaY6Cy_nbpj7uKW3ANI3VdQLb2Z9_ub195dKH63RMrNSQMcct-K05qwR9ad5WX8eziLXZSW0Ft1OnL0cUo');">
+</div>
+<!-- Dark Gradient Overlay -->
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+<!-- Top Brand Mark -->
+<div class="relative z-10 flex items-center gap-3">
+<div class="flex items-center justify-center w-10 h-10 rounded-full bg-primary text-text-main shadow-lg">
+<span class="material-symbols-outlined text-2xl">local_shipping</span>
+</div>
+<h2 class="text-white text-lg font-bold tracking-wide drop-shadow-md">SupplyChain AI</h2>
+</div>
+<!-- Bottom Content -->
+<div class="relative z-10 mt-auto max-w-md">
+<div class="inline-flex items-center gap-2 px-3 py-1 mb-4 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-xs font-medium">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                    AI-for-Good Initiative
+                </div>
+<h1 class="text-3xl lg:text-4xl font-bold text-white leading-tight mb-3 drop-shadow-lg">
+                    Ensuring essential supplies reach those in need.
+                </h1>
+<p class="text-white/80 text-sm lg:text-base leading-relaxed">
+                    Prevent critical stock-outs and waste for government hospitals, PHCs, and disaster relief teams worldwide.
+                </p>
+</div>
+</div>
+<!-- Right Pane: Login Form -->
+<div class="w-full lg:w-1/2 flex flex-col justify-center p-6 sm:p-12 lg:p-16 relative">
+<!-- Header -->
+<div class="mb-8">
+<h2 class="text-3xl font-black text-text-main dark:text-white mb-2 tracking-tight">Secure Login</h2>
+<p class="text-text-muted dark:text-gray-400 text-base">
+                    Prevent stock-outs before they happen.
+                </p>
+</div>
+<form class="flex flex-col gap-5" onsubmit="event.preventDefault();">
+<!-- Role Selection -->
+<div class="flex flex-col gap-2">
+<label class="text-text-main dark:text-gray-200 text-sm font-semibold ml-1">Select Role</label>
+<div class="relative focus-ring rounded-xl transition-shadow duration-200">
+<select class="w-full h-14 pl-4 pr-10 rounded-xl bg-surface-light dark:bg-[#23220f] border-transparent focus:border-transparent focus:ring-0 text-text-main dark:text-white text-base appearance-none cursor-pointer">
+<option disabled="" selected="" value="">Choose your access level</option>
+<option value="hospital_manager">Hospital/PHC Manager</option>
+<option value="procurement">Procurement Officer</option>
+<option value="ngo_officer">NGO Field Officer</option>
+<option value="admin">System Administrator</option>
+</select>
+<div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none text-text-muted">
+<span class="material-symbols-outlined">expand_more</span>
+</div>
+</div>
+</div>
+<!-- Email/Phone Input -->
+<div class="flex flex-col gap-2">
+<label class="text-text-main dark:text-gray-200 text-sm font-semibold ml-1">Email or Phone Number</label>
+<div class="relative h-14 flex items-center bg-surface-light dark:bg-[#23220f] rounded-xl focus-ring transition-shadow duration-200">
+<div class="pl-4 text-text-muted flex items-center justify-center">
+<span class="material-symbols-outlined">person</span>
+</div>
+<input class="w-full h-full bg-transparent border-none focus:ring-0 text-text-main dark:text-white placeholder-text-muted/70 px-4 text-base" placeholder="user@health.gov or +1 234..." type="text"/>
+</div>
+</div>
+<!-- Remember Me & Help -->
+<div class="flex items-center justify-between py-1">
+<label class="flex items-center gap-3 cursor-pointer group">
+<div class="relative flex items-center">
+<input class="peer h-5 w-5 rounded border-2 border-surface-light dark:border-gray-600 bg-surface-light dark:bg-[#23220f] text-text-main checked:bg-primary checked:border-primary focus:ring-0 focus:ring-offset-0 transition-all cursor-pointer" type="checkbox"/>
+<span class="absolute text-black opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none">
+<svg class="h-3.5 w-3.5" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" fill-rule="evenodd"></path>
+</svg>
+</span>
+</div>
+<span class="text-text-main dark:text-gray-300 text-sm font-medium group-hover:text-black dark:group-hover:text-white transition-colors">Remember device</span>
+</label>
+<a class="text-sm font-semibold text-text-main dark:text-white hover:text-primary transition-colors underline decoration-2 decoration-primary/30 hover:decoration-primary" href="#">Need Help?</a>
+</div>
+<!-- Main Action Button -->
+<button class="w-full h-12 bg-primary hover:bg-[#e6e205] text-text-main text-base font-bold rounded-full shadow-[0_4px_14px_0_rgba(249,245,6,0.39)] hover:shadow-[0_6px_20px_rgba(249,245,6,0.23)] hover:-translate-y-0.5 active:translate-y-0 active:shadow-none transition-all duration-200 flex items-center justify-center gap-2 mt-2">
+<span>Send OTP</span>
+<span class="material-symbols-outlined text-lg">arrow_forward</span>
+</button>
+</form>
+<!-- Footer Meta -->
+<div class="mt-auto pt-8 flex flex-col items-center gap-4">
+<div class="w-full h-px bg-surface-light dark:bg-gray-800"></div>
+<div class="flex flex-col sm:flex-row items-center justify-between w-full gap-4 text-xs text-text-muted dark:text-gray-500">
+<div class="flex items-center gap-1.5 bg-surface-light dark:bg-[#23220f] px-3 py-1.5 rounded-full">
+<span class="material-symbols-outlined text-sm text-green-600">lock</span>
+<span class="font-medium">Secure Connection | HIPAA Compliant</span>
+</div>
+<div class="flex gap-4 font-medium">
+<a class="hover:text-text-main dark:hover:text-white transition-colors" href="#">Privacy</a>
+<a class="hover:text-text-main dark:hover:text-white transition-colors" href="#">Terms</a>
+<a class="hover:text-text-main dark:hover:text-white transition-colors" href="#">Contact Admin</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Theme Toggle Helper (Optional visual indicator for user to know it works in both) -->
+<div class="fixed bottom-4 right-4 text-xs text-text-muted opacity-50 pointer-events-none">
+        Supports Light &amp; Dark Mode
+    </div>
+</body></html>

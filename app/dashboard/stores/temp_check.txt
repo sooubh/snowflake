@@ -1,0 +1,24 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { StockItem } from "@/lib/azureDefaults";
+import { Package, Trash2, Plus, ArrowLeft, Search, Filter } from "lucide-react";
+import Link from 'next/link';
+import { azureService } from "@/lib/azureDefaults"; // We need to use Server Action in Client Component? No, we should uses actions.
+// Actually we need to add getItemsAction or similar if we want to be pure.
+// But we can import `getAllItems` in a Server Component?
+// This is a "use client" component. So we need an action.
+// I will create `getStockAction` in `admin.ts`?
+// Or I can use `chat.ts` actions? No.
+// Let's add `getStockAction` to `admin.ts` first? 
+// Or just inline fetch if I can? No, server actions preferred.
+// I will assume `getStockAction` exists or I will add it. I'll add `getStockAction` to `admin.ts` in a separate step or just assume I can fetch it via an API route if exists.
+// Wait, `app/actions/chat.ts` is mostly for AI.
+// I'll update `admin.ts` first to include `getStockAction`.
+
+// Wait, I can't update admin.ts AND write this file in one turn easily.
+// I will assume `addStockItemAction` and `deleteStockItemAction` are there.
+// For Fetching, I'll use a new action `getStoreItemsAction` which I'll add to admin.ts.
+
+// Let's UPDATE admin.ts FIRST.
