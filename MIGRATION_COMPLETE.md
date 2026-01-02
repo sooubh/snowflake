@@ -38,14 +38,6 @@ Your LedgerShield application is now **fully migrated to Snowflake** and operati
 ## 🔧 Final Configuration
 
 ### `.env.local`
-```env
-SNOWFLAKE_ACCOUNT=qzocpqx-mi36866
-SNOWFLAKE_USERNAME=SOOUBH
-SNOWFLAKE_PASSWORD=Sourabhsingh352027
-SNOWFLAKE_WAREHOUSE=COMPUTE_WH
-SNOWFLAKE_DATABASE=INVENTORYDB
-SNOWFLAKE_SCHEMA=SUPPLY_CHAIN
-```
 
 ---
 
