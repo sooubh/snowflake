@@ -3,7 +3,7 @@
 import React from 'react';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import { Transaction } from '@/lib/azureDefaults';
+import { Transaction } from '@/lib/snowflakeService';
 import { X, Download, Printer } from 'lucide-react';
 
 interface InvoiceModalProps {
@@ -21,7 +21,7 @@ export default function InvoiceModal({ transaction, isOpen, onClose }: InvoiceMo
         // Header
         doc.setFontSize(22);
         doc.text("INVOICE", 105, 20, { align: "center" });
-        
+
         doc.setFontSize(12);
         doc.text(`Invoice #: ${transaction.invoiceNumber}`, 20, 40);
         doc.text(`Date: ${new Date(transaction.date).toLocaleDateString()}`, 20, 50);
@@ -29,7 +29,7 @@ export default function InvoiceModal({ transaction, isOpen, onClose }: InvoiceMo
 
         // Client Info (Mock)
         doc.text(`Bill To: ${transaction.customerName || 'Walk-in Customer'}`, 140, 40);
-        
+
         // Table
         const tableColumn = ["Item", "Qty", "Price", "Subtotal"];
         const tableRows: any[] = [];
@@ -54,7 +54,7 @@ export default function InvoiceModal({ transaction, isOpen, onClose }: InvoiceMo
         // Totals
         // @ts-ignore
         const finalY = doc.lastAutoTable.finalY || 100;
-        
+
         doc.text(`Total Amount: $${transaction.totalAmount.toFixed(2)}`, 140, finalY + 20);
         doc.text(`Payment Method: ${transaction.paymentMethod}`, 20, finalY + 20);
 
@@ -71,9 +71,9 @@ export default function InvoiceModal({ transaction, isOpen, onClose }: InvoiceMo
     };
 
     const handlePrint = () => {
-         const doc = generatePDF();
-         doc.autoPrint();
-         window.open(doc.output('bloburl'), '_blank');
+        const doc = generatePDF();
+        doc.autoPrint();
+        window.open(doc.output('bloburl'), '_blank');
     };
 
     return (
@@ -141,13 +141,13 @@ export default function InvoiceModal({ transaction, isOpen, onClose }: InvoiceMo
 
                 {/* Actions */}
                 <div className="p-4 bg-neutral-800 border-t border-neutral-700 flex justify-end gap-3">
-                    <button 
+                    <button
                         onClick={handlePrint}
                         className="px-4 py-2 rounded-lg bg-neutral-700 text-white hover:bg-neutral-600 transition-colors flex items-center gap-2"
                     >
                         <Printer className="w-4 h-4" /> Print
                     </button>
-                    <button 
+                    <button
                         onClick={handleDownload}
                         className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-500 transition-colors flex items-center gap-2 font-bold"
                     >

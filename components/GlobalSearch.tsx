@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { StockItem } from '@/lib/azureDefaults';
+import { StockItem } from '@/lib/snowflakeService';
 import { useRouter } from 'next/navigation';
 import { SIMULATED_USERS, UserProfile } from '@/lib/auth';
 
@@ -101,7 +101,7 @@ export function GlobalSearch({ isOpen, onClose }: GlobalSearchProps) {
 
     return (
         <div className="fixed inset-0 z-[999] flex items-start justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200" onClick={onClose}>
-            <div 
+            <div
                 className="bg-white dark:bg-[#1f1e0b] w-full max-w-3xl rounded-3xl shadow-2xl border border-neutral-200 dark:border-neutral-700 overflow-hidden animate-in zoom-in-95 slide-in-from-top-4 duration-300 mt-20"
                 onClick={(e) => e.stopPropagation()}
             >
@@ -122,7 +122,7 @@ export function GlobalSearch({ isOpen, onClose }: GlobalSearchProps) {
                             </button>
                         )}
                     </div>
-                    
+
                     {/* Section filter - Only show user's section, no cross-section access */}
                     {currentUser && (
                         <div className="flex gap-2 mt-3 items-center">
@@ -174,11 +174,10 @@ export function GlobalSearch({ isOpen, onClose }: GlobalSearchProps) {
                                                 className="w-full p-3 rounded-xl hover:bg-neutral-50 dark:hover:bg-neutral-900/50 transition-colors text-left group"
                                             >
                                                 <div className="flex items-center gap-3">
-                                                    <div className={`size-10 rounded-lg flex items-center justify-center ${
-                                                        item.category === 'Medicine' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600' :
-                                                        item.category === 'Supplies' ? 'bg-orange-100 dark:bg-orange-900/30 text-orange-600' :
-                                                        'bg-purple-100 dark:bg-purple-900/30 text-purple-600'
-                                                    }`}>
+                                                    <div className={`size-10 rounded-lg flex items-center justify-center ${item.category === 'Medicine' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600' :
+                                                            item.category === 'Supplies' ? 'bg-orange-100 dark:bg-orange-900/30 text-orange-600' :
+                                                                'bg-purple-100 dark:bg-purple-900/30 text-purple-600'
+                                                        }`}>
                                                         <span className="material-symbols-outlined text-[18px]">
                                                             {item.category === 'Medicine' ? 'pill' : 'inventory_2'}
                                                         </span>
@@ -197,11 +196,10 @@ export function GlobalSearch({ isOpen, onClose }: GlobalSearchProps) {
                                                             </span>
                                                         </p>
                                                     </div>
-                                                    <span className={`px-2 py-1 rounded-full text-xs font-bold ${
-                                                        item.status === 'Out of Stock' ? 'bg-red-100 text-red-700' :
-                                                        item.status === 'Low Stock' ? 'bg-yellow-100 text-yellow-700' :
-                                                        'bg-green-100 text-green-700'
-                                                    }`}>
+                                                    <span className={`px-2 py-1 rounded-full text-xs font-bold ${item.status === 'Out of Stock' ? 'bg-red-100 text-red-700' :
+                                                            item.status === 'Low Stock' ? 'bg-yellow-100 text-yellow-700' :
+                                                                'bg-green-100 text-green-700'
+                                                        }`}>
                                                         {item.status}
                                                     </span>
                                                 </div>

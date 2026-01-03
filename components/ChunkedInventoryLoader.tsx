@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from 'react';
-import { StockItem } from '@/lib/azureDefaults';
+import { StockItem } from '@/lib/snowflakeService';
 import { getInventoryChunk } from '@/app/actions/inventory';
 
 interface ChunkedInventoryLoaderProps {
@@ -47,15 +47,15 @@ export function ChunkedInventoryLoader({ section, userId, role, children }: Chun
         try {
             console.log(`🔄 ChunkedLoader: Loading chunk for ${role} in ${section}, current total: ${items.length}`);
             const result = await getInventoryChunk(section, userId, role, 50, continuationToken);
-            
+
             console.log(`📥 ChunkedLoader: Received ${result.items.length} items, token: ${result.continuationToken ? 'HAS MORE' : 'DONE'}`);
-            
+
             setItems(prev => {
                 const newTotal = [...prev, ...result.items];
                 console.log(`📊 ChunkedLoader: Total accumulated: ${newTotal.length} items`);
                 return newTotal;
             });
-            
+
             if (result.continuationToken) {
                 // More chunks available, set token to trigger next load
                 console.log(`🔗 ChunkedLoader: More chunks available, will load next...`);

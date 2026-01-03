@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { UserProfile, SIMULATED_USERS } from '@/lib/auth';
-import { SystemStore } from '@/lib/azureDefaults';
+import { SystemStore } from '@/lib/snowflakeService';
 
 interface StoreSelectorProps {
     currentUser: UserProfile | null;

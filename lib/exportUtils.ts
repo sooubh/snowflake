@@ -1,7 +1,7 @@
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import Papa from 'papaparse';
-import { StockItem, Transaction, Activity, PurchaseOrder } from './azureDefaults';
+import { StockItem, Transaction, Activity, PurchaseOrder } from './snowflakeService';
 
 // Type for generic data objects
 type DataItem = Record<string, any>;

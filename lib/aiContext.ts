@@ -1,5 +1,5 @@
 
-import { StockItem, Activity } from "../lib/azureDefaults";
+import { StockItem, Activity } from "../lib/snowflakeService";
 
 export const SYSTEM_PROMPT = `
 You are ** LedgerBot ** (StockHealth AI), an advanced inventory & analytics assistant for LedgerShield.
