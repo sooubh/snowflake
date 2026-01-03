@@ -48,8 +48,26 @@ const AGENT_SYSTEM_PROMPT = `${SYSTEM_PROMPT}
 ${TOOL_DEFINITIONS}
 `;
 
+// Simple token estimation: ~4 characters per token (rough approximation)
+function estimateTokens(text: string): number {
+    return Math.ceil(text.length / 4);
+}
+
+// Truncate text to fit within token limit
+function truncateToTokens(text: string, maxTokens: number): string {
+    const estimatedTokens = estimateTokens(text);
+    if (estimatedTokens <= maxTokens) {
+        return text;
+    }
+    const targetChars = maxTokens * 4;
+    return text.substring(0, targetChars);
+}
+
 export async function chatWithLedgerBot(messages: { role: 'user' | 'bot' | 'system', text: string }[], currentPath?: string) {
     try {
+        // Token limit for Snowflake Cortex (8192 max, we'll target 6000 to be safe)
+        const MAX_TOTAL_TOKENS = 6000;
+
         // 1. Get User Context
         const cookieStore = await cookies();
         const userId = cookieStore.get('simulated_user_id')?.value;
@@ -65,13 +83,42 @@ export async function chatWithLedgerBot(messages: { role: 'user' | 'bot' | 'syst
         const items = await inventoryService.getAllItems(section);
 
         // 3. Build Context (Limited to avoid hitting token limits)
-        // We'll pass a summary context. If needed, we can implement a 'search_items' tool.
         const contextData = getInventoryContext(Array.isArray(items) ? items : items.items, []);
 
-        // 4. Construct Prompt
-        const historyText = messages.map(m => `${m.role.toUpperCase()}: ${m.text}`).join('\n');
+        // 4. Estimate token usage and truncate accordingly
+        const systemPromptTokens = estimateTokens(AGENT_SYSTEM_PROMPT);
         const lastUserMessage = messages[messages.length - 1].text;
+        const userMessageTokens = estimateTokens(lastUserMessage);
 
+        // Reserve tokens for system prompt, user message, and overhead (~500 tokens)
+        const remainingTokens = MAX_TOTAL_TOKENS - systemPromptTokens - userMessageTokens - 500;
+
+        // Allocate remaining tokens: 60% to context data, 40% to chat history
+        const contextTokenLimit = Math.floor(remainingTokens * 0.6);
+        const historyTokenLimit = Math.floor(remainingTokens * 0.4);
+
+        // Truncate context data to fit token limit
+        const truncatedContext = truncateToTokens(contextData, contextTokenLimit);
+
+        // Truncate chat history (keep most recent messages)
+        // Build history text from most recent to oldest, then reverse
+        let historyText = '';
+        let historyTokens = 0;
+        const recentMessages = messages.slice(0, -1).reverse(); // Exclude last message, start from most recent
+
+        for (const msg of recentMessages) {
+            const msgText = `${msg.role.toUpperCase()}: ${msg.text}\n`;
+            const msgTokens = estimateTokens(msgText);
+
+            if (historyTokens + msgTokens > historyTokenLimit) {
+                break; // Stop if we exceed the limit
+            }
+
+            historyText = msgText + historyText; // Prepend to maintain chronological order
+            historyTokens += msgTokens;
+        }
+
+        // 5. Construct Prompt
         const fullPrompt = `
 ${AGENT_SYSTEM_PROMPT}
 
@@ -80,7 +127,7 @@ User: ${user?.name || 'Guest'} (${section})
 Current Page: ${currentPath}
 
 DATA SNAPSHOT:
-${contextData.replace(/'/g, "''").substring(0, 25000)}...
+${truncatedContext.replace(/'/g, "''")}
 
 STORE MAPPING:
 ${storeMapping}
@@ -91,7 +138,11 @@ ${historyText}
 User: ${lastUserMessage}
         `;
 
-        // 5. Query Snowflake Cortex
+        // Log token usage for debugging
+        const totalEstimatedTokens = estimateTokens(fullPrompt);
+        console.log(`🤖 Estimated tokens: ${totalEstimatedTokens} / ${MAX_TOTAL_TOKENS}`);
+
+        // 6. Query Snowflake Cortex
         // Use 'llama3-70b' for best reasoning capability
         // We use BIND VARIABLES (?) to safely pass the prompt to Snowflake
         const sql = `SELECT SNOWFLAKE.CORTEX.COMPLETE(?, ?) as RESPONSE`;
@@ -101,7 +152,7 @@ User: ${lastUserMessage}
         const results = await inventoryService.runAIQuery(sql, ['llama3-70b', fullPrompt]);
         const responseText = results[0]?.response || "I couldn't process that.";
 
-        // 6. Check for Tool Call (JSON detection)
+        // 7. Check for Tool Call (JSON detection)
         let toolCall: any = null;
         try {
             // Attempt to parse if it looks like JSON
@@ -137,10 +188,23 @@ import { performAIAction } from './ai';
 async function executeTool(toolCall: any, section: string, user: any, items: any) {
     // Adapter to match chat interface return type
     const result = await performAIAction(toolCall);
+
+    // Build response object
+    const response: any = {
+        reply: result.success ? `✅ ${result.message}` : `❌ ${result.message}`
+    };
+
+    // Pass through redirectPath if exists
     if (result.redirectPath) {
-        return { reply: result.message, redirectPath: result.redirectPath };
+        response.redirectPath = result.redirectPath;
     }
-    return { reply: result.success ? `✅ ${result.message}` : `❌ ${result.message}` };
+
+    // Pass through clientAction if exists
+    if (result.clientAction) {
+        response.clientAction = result.clientAction;
+    }
+
+    return response;
 }
 
 // Helper: Generate a "Simulated" but data-aware response

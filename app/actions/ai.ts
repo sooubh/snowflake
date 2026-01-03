@@ -161,6 +161,43 @@ export async function performAIAction(toolCall: any) {
 
             return { success: true, message: `Processed ${args.type} for $${totalAmount.toFixed(2)}.` };
 
+        } else if (tool === "add_to_sales_cart") {
+            // Validate and find items
+            const cartItems: any[] = [];
+            const notFound: string[] = [];
+
+            for (const req of args.items) {
+                const item = itemList.find((i: any) => i.name.toLowerCase().includes(req.itemName.toLowerCase()));
+                if (item) {
+                    if (item.quantity < req.quantity) {
+                        return { success: false, message: `Not enough stock for ${item.name}. Available: ${item.quantity}` };
+                    }
+                    cartItems.push({
+                        id: item.id,
+                        name: item.name,
+                        quantity: req.quantity,
+                        price: item.price || 0,
+                        unit: item.unit || 'unit'
+                    });
+                } else {
+                    notFound.push(req.itemName);
+                }
+            }
+
+            if (notFound.length > 0) {
+                return { success: false, message: `Couldn't find: ${notFound.join(", ")}` };
+            }
+
+            // Return a client action for the frontend to handle
+            return {
+                success: true,
+                message: `Added ${cartItems.map(i => `${i.quantity} ${i.name}`).join(', ')} to cart.`,
+                clientAction: {
+                    type: 'ADD_TO_SALES_CART',
+                    data: { items: cartItems }
+                }
+            };
+
         } else if (tool === "navigate_to_page") {
             return { success: true, message: `Navigating...`, redirectPath: args.path };
         }

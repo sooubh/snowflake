@@ -154,13 +154,20 @@ export default function SalesPage() {
     // AI Integration: Listen for Add to Cart events
     useEffect(() => {
         const handleAIAddToCart = (e: any) => {
-            const itemsToAdd = e.detail; // Array of { itemName, quantity }
+            // Handle data structure: { items: [...] }
+            const data = e.detail;
+            const itemsToAdd = data?.items || data; // Support both formats
+
             if (!Array.isArray(itemsToAdd)) return;
 
             itemsToAdd.forEach((reqItem: any) => {
+                // Use either name or itemName field
+                const searchName = reqItem.name || reqItem.itemName;
+                if (!searchName) return;
+
                 // Fuzzy match name
                 const matchedItem = inventory.find(inv =>
-                    inv.name.toLowerCase().includes(reqItem.itemName.toLowerCase())
+                    inv.name.toLowerCase().includes(searchName.toLowerCase())
                 );
 
                 if (matchedItem && matchedItem.quantity > 0) {
@@ -175,8 +182,13 @@ export default function SalesPage() {
             });
         };
 
+        // Listen for both old and new event names for compatibility
         window.addEventListener('ledgerbot-add-to-cart', handleAIAddToCart);
-        return () => window.removeEventListener('ledgerbot-add-to-cart', handleAIAddToCart);
+        window.addEventListener('ledgerbot-add-to-sales-cart', handleAIAddToCart);
+        return () => {
+            window.removeEventListener('ledgerbot-add-to-cart', handleAIAddToCart);
+            window.removeEventListener('ledgerbot-add-to-sales-cart', handleAIAddToCart);
+        };
     }, [inventory]);
 
     // Extract unique categories from inventory
@@ -398,8 +410,8 @@ export default function SalesPage() {
                                     key={category}
                                     onClick={() => setSelectedCategory(category)}
                                     className={`px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition-all shrink-0 ${selectedCategory === category
-                                            ? 'bg-primary text-black shadow-sm'
-                                            : 'bg-white dark:bg-[#1f1e0b] text-neutral-600 dark:text-neutral-400 hover:bg-neutral-50 dark:hover:bg-neutral-900'
+                                        ? 'bg-primary text-black shadow-sm'
+                                        : 'bg-white dark:bg-[#1f1e0b] text-neutral-600 dark:text-neutral-400 hover:bg-neutral-50 dark:hover:bg-neutral-900'
                                         }`}
                                 >
                                     {category}
@@ -430,8 +442,8 @@ export default function SalesPage() {
                                         key={item.id}
                                         onClick={() => item.quantity > 0 && addToCart(item)}
                                         className={`group bg-white dark:bg-[#1f1e0b] p-3 rounded-xl cursor-pointer transition-all flex flex-col justify-between h-44 shadow-sm hover:shadow-md ${item.quantity > 0
-                                                ? 'hover:bg-neutral-50 dark:hover:bg-neutral-900/50'
-                                                : 'opacity-50 grayscale cursor-not-allowed'
+                                            ? 'hover:bg-neutral-50 dark:hover:bg-neutral-900/50'
+                                            : 'opacity-50 grayscale cursor-not-allowed'
                                             }`}
                                     >
                                         <div className="space-y-1.5">
@@ -448,8 +460,8 @@ export default function SalesPage() {
                                                     </span>
                                                 ) : (
                                                     <span className={`px-1.5 py-0.5 text-[9px] font-bold rounded uppercase tracking-wider ${item.quantity < 10
-                                                            ? 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400'
-                                                            : 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400'
+                                                        ? 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400'
+                                                        : 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400'
                                                         }`}>
                                                         {item.quantity} Left
                                                     </span>
@@ -635,8 +647,8 @@ export default function SalesPage() {
                         onClick={handleCheckout}
                         disabled={cart.length === 0 || isProcessing}
                         className={`w-full py-3 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all transform active:scale-[0.98] ${cart.length > 0 && !isProcessing
-                                ? 'bg-primary hover:bg-[#eae605] text-black shadow-lg hover:shadow-xl hover:shadow-primary/20'
-                                : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-400 cursor-not-allowed'
+                            ? 'bg-primary hover:bg-[#eae605] text-black shadow-lg hover:shadow-xl hover:shadow-primary/20'
+                            : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-400 cursor-not-allowed'
                             }`}
                     >
                         {isProcessing ? (
