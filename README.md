@@ -22,7 +22,7 @@ LedgerShield is a **unified supply chain platform** that brings all data togethe
 ✅ **Real-time Inventory Tracking** - See what's in stock across all locations  
 ✅ **Integrated Sales & Usage** - Track consumption patterns instantly  
 ✅ **Smart Procurement** - Auto-generate purchase orders before stock-outs  
-✅ **AI-Powered Insights** - Predict demand and prevent wastage  
+✅ **AI-Powered Insights** - Predict demand and prevent wastage via Snowflake Cortex AI  
 ✅ **Role-Based Access** - Admins manage multiple stores, retailers see their own data  
 ✅ **Interactive Reports** - Visualize trends with charts and analytics  
 
@@ -54,7 +54,8 @@ LedgerShield is a **unified supply chain platform** that brings all data togethe
 
 ### Prerequisites
 - Node.js 18+ installed
-- Azure Cosmos DB account (for production)
+- Snowflake Account (for data storage and Cortex AI)
+- **Note**: Ensure your Snowflake region supports [Cortex AI](https://docs.snowflake.com/en/user-guide/snowflake-cortex-llm-functions#availability).
 
 ### Installation
 
@@ -68,7 +69,8 @@ npm install
 
 # Set up environment variables
 cp .env.example .env.local
-# Add your Azure Cosmos DB credentials to .env.local
+# Add your Snowflake credentials to .env.local
+# See SNOWFLAKE_CORTEX_SETUP.md for AI configuration details.
 
 # Run development server
 npm run dev
@@ -92,7 +94,8 @@ Open [http://localhost:3000](http://localhost:3000) to see the application.
 
 - **Frontend**: Next.js 16, React 19, TypeScript
 - **Styling**: TailwindCSS 4
-- **Database**: Azure Cosmos DB
+- **Database**: Snowflake
+- **AI**: Snowflake Cortex AI (Llama 3, Mistral)
 - **Charts**: Recharts (interactive visualizations)
 - **Authentication**: Cookie-based session management
 - **Deployment**: Vercel (recommended)
@@ -121,19 +124,9 @@ Open [http://localhost:3000](http://localhost:3000) to see the application.
 
 ## 👥 Team
 
-**LedgerShield** is built by Team LedgerShield for Microsoft ImagineCup 2024:
+**LedgerShield** is built by Team LedgerShield:
 
 - **Sourabh Singh** - Project Lead & Full Stack Developer
-- **Sahil Sarode** - Frontend Developer & UI/UX Designer  
-- **Sneha Darade** - Backend Developer & Data Analyst
-
----
-
-## 📖 Documentation
-
-- [Implementation Plan](./documents/implementation-plan.md)
-- [User Guide](./documents/user-guide.md)
-- [API Documentation](./documents/api-docs.md)
 
 ---
 
@@ -146,11 +139,3 @@ We welcome contributions! Please see [CONTRIBUTING.md](./CONTRIBUTING.md) for gu
 ## 📄 License
 
 This project is licensed under the MIT License - see [LICENSE](./LICENSE) file for details.
-
----
-
-## 🙏 Acknowledgments
-
-Built for **Microsoft ImagineCup 2024** to solve real-world supply chain challenges in healthcare and public distribution systems.
-
-**Making supply chains transparent, efficient, and reliable for everyone.** 🛡️

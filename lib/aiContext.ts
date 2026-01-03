@@ -108,7 +108,7 @@ export function getInventoryContext(items: StockItem[], activities: Activity[] =
                 }
             }
 
-            return `- ${i.name}: ${i.quantity} ${i.unit || 'units'} [${status}](${i.category})${expiryStr}`;
+            return `- ${i.name}: ${i.quantity} ${i.unit || 'units'} [${status}] (${i.category}) [Store: ${i.ownerId}]${expiryStr}`;
         }).join('\n');
     }
 

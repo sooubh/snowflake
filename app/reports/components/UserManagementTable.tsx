@@ -4,25 +4,44 @@ import { useState } from 'react';
 import { exportToCSV, exportToPDF } from '@/lib/exportUtils';
 
 const MOCK_USERS = [
-  {id: 1, name: "Sarah Chen", email: "sarah.c@gov.org", role: "Super Admin", region: "Central HQ", lastActive: "Just now", avatar: "https://lh3.googleusercontent.com/aida-public/AB6AXuBn26oqo047ja6eRDdHXe70qNoLHYZun4HY7kzefaIeRDZsQ3fe059pCOXftUCtWdtcMk10sSuNykTv_YHgJEMelKbGYpRsgfRXFw6FC5vEZyqcquPdrWeIWmxREWvqwqncuv-YR1aYLI9pqXezQU2kCXhw5DIoHZ3tTcG0jpA38B94_bwblNIhRNUJ0mY3wG74l6KTEdEvigFjDt6VU4pm50zFDlk3fDHrmgSVcDPSJf1mu5wWFGH5fkGZ2RYJgoCnLH95GepSG1Q"},
-  {id: 2, name: "Marcus Johnson", email: "m.johnson@relief.org", role: "Logistician", region: "North District", lastActive: "2 hrs ago", avatar: "https://lh3.googleusercontent.com/aida-public/AB6AXuCsguqMDLgkUDeXcszRKwbCOctcIaLcBSmotdtmAFE3MrXIXkW6tICh0XTn-3LjQvtyl_LF9SEN59qO0BP0lxE9_RoRaW4-gVD8UV4rlHQimNI1LaokSr_hrJTBPi0nZvQswWxIb1CK9SIbQZwOL8eaVvj9qfc63EGxIssIchTvh5M4RkH4FaX6mviy7rAZb2OWfvW4J4Xv-cxRA8NfsnHwnYlewu-KsAlemhjSioarYIrk97kJDwWpoD3PH8L2ApFHtzl4W3hulM0"},
-  {id: 3, name: "Priya Patel", email: "priya.p@health.gov", role: "Viewer", region: "East Region", lastActive: "Yesterday", avatar: "https://lh3.googleusercontent.com/aida-public/AB6AXuDfgxh5pLac9NLXFYI3oBTOSJ7T8yyYjGexx08fdW6l-SxmkU6E_YP9x1BhJ2_Oa0m-hlO2-3pX8eF-wmGValRI1ajAy1lZUwpJ1did0fd8obtNMvI-uxOr09fW0InJzzTtXZ_DoditKlxaCeCE45bnJaX0bKLjhzKzp9QuVxQzqC5hXZm6Li08BbJEIa9TuE4ENDbV3vWTblxBmsxpthzgIjBoNwhyvNFi_KSWXNt8xr9OUNLdDOZNj-zKYBlHzcAk15WnAcajTQM"},
+  // FDC SECTION
+  { id: 1, name: "Dr. Rajesh Sharma", email: "rajesh.sharma@psd.gov.in", role: "Section Admin", region: "Food Distribution Center", section: "FDC", lastActive: "Just now", avatar: "https://randomuser.me/api/portraits/men/10.jpg" },
+  { id: 2, name: "Amit Patel", email: "amit.patel@psd.gov.in", role: "Store Manager", region: "Central Store A", section: "FDC", lastActive: "5 mins ago", avatar: "https://randomuser.me/api/portraits/men/12.jpg" },
+  { id: 3, name: "Suresh Kumar", email: "suresh.kumar@psd.gov.in", role: "Logistician", region: "Central Store B", section: "FDC", lastActive: "1 hr ago", avatar: "https://randomuser.me/api/portraits/men/15.jpg" },
+
+  // HOSPITAL SECTION
+  { id: 4, name: "Dr. Anjali Gupta", email: "anjali.gupta@hospital.gov.in", role: "Director", region: "City General Hospital", section: "Hospital", lastActive: "30 mins ago", avatar: "https://randomuser.me/api/portraits/women/11.jpg" },
+  { id: 5, name: "Priya Singh", email: "priya.singh@hospital.gov.in", role: "Pharmacist", region: "City General Hospital", section: "Hospital", lastActive: "10 mins ago", avatar: "https://randomuser.me/api/portraits/women/22.jpg" },
+  { id: 6, name: "Rahul Verma", email: "rahul.verma@hospital.gov.in", role: "Inventory Manager", region: "Rural PHC 1", section: "Hospital", lastActive: "Yesterday", avatar: "https://randomuser.me/api/portraits/men/33.jpg" },
+  { id: 7, name: "Neha Reddy", email: "neha.reddy@hospital.gov.in", role: "Nurse Admin", region: "Rural PHC 2", section: "Hospital", lastActive: "4 hrs ago", avatar: "https://randomuser.me/api/portraits/women/45.jpg" },
+
+  // NGO SECTION
+  { id: 8, name: "Vikram Malhotra", email: "vikram.m@ngo.org", role: "Coordinator", region: "Relief Camp Alpha", section: "NGO", lastActive: "2 days ago", avatar: "https://randomuser.me/api/portraits/men/50.jpg" },
+  { id: 9, name: "Pooja Desai", email: "pooja.desai@ngo.org", role: "Volunteer Lead", region: "Relief Camp Beta", section: "NGO", lastActive: "Just now", avatar: "https://randomuser.me/api/portraits/women/60.jpg" },
+  { id: 10, name: "Karan Johar", email: "karan.j@ngo.org", role: "Field Officer", region: "Mobile Unit 1", section: "NGO", lastActive: "1 week ago", avatar: "https://randomuser.me/api/portraits/men/66.jpg" },
 ];
 
-export function UserManagementTable() {
+interface UserManagementTableProps {
+  userSection?: string;
+}
+
+export function UserManagementTable({ userSection }: UserManagementTableProps) {
   const [filterText, setFilterText] = useState('');
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [showActionsMenu, setShowActionsMenu] = useState<number | null>(null);
   const [inviteEmail, setInviteEmail] = useState('');
 
-  const filteredUsers = MOCK_USERS.filter(u => 
-    u.name.toLowerCase().includes(filterText.toLowerCase()) ||
-    u.email.toLowerCase().includes(filterText.toLowerCase()) ||
-    u.region.toLowerCase().includes(filterText.toLowerCase())
+  const filteredUsers = MOCK_USERS.filter(u =>
+    // 1. Filter by Section (if provided)
+    (!userSection || u.section === userSection) &&
+    // 2. Filter by Search Text
+    (u.name.toLowerCase().includes(filterText.toLowerCase()) ||
+      u.email.toLowerCase().includes(filterText.toLowerCase()) ||
+      u.region.toLowerCase().includes(filterText.toLowerCase()))
   );
 
   const handleExport = (type: 'csv' | 'pdf') => {
-    const users = filteredUsers.map(({avatar, ...rest}) => rest);
+    const users = filteredUsers.map(({ avatar, ...rest }) => rest);
     if (type === 'csv') {
       exportToCSV(users, 'team_members');
     } else {
@@ -59,9 +78,9 @@ export function UserManagementTable() {
             </button>
             <div className="relative">
               <span className="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-neutral-500 text-[18px]">search</span>
-              <input 
-                className="h-9 pl-9 pr-4 rounded-full bg-white dark:bg-[#23220f] border border-neutral-200 dark:border-neutral-700 text-sm focus:ring-primary focus:border-primary text-neutral-dark dark:text-white placeholder-neutral-500" 
-                placeholder="Filter users" 
+              <input
+                className="h-9 pl-9 pr-4 rounded-full bg-white dark:bg-[#23220f] border border-neutral-200 dark:border-neutral-700 text-sm focus:ring-primary focus:border-primary text-neutral-dark dark:text-white placeholder-neutral-500"
+                placeholder="Filter users"
                 type="text"
                 value={filterText}
                 onChange={(e) => setFilterText(e.target.value)}
@@ -89,7 +108,7 @@ export function UserManagementTable() {
                   <tr key={user.id} className="hover:bg-neutral-50 dark:hover:bg-black/20 transition-colors">
                     <td className="p-5">
                       <div className="flex items-center gap-3">
-                        <div className="bg-center bg-cover size-8 rounded-full" style={{backgroundImage: `url('${user.avatar}')`}}></div>
+                        <div className="bg-center bg-cover size-8 rounded-full" style={{ backgroundImage: `url('${user.avatar}')` }}></div>
                         <div>
                           <p className="text-sm font-bold text-neutral-dark dark:text-white">{user.name}</p>
                           <p className="text-xs text-neutral-500">{user.email}</p>
@@ -97,11 +116,10 @@ export function UserManagementTable() {
                       </div>
                     </td>
                     <td className="p-5">
-                      <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
-                        user.role === 'Super Admin' ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400' :
+                      <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${user.role === 'Super Admin' ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400' :
                         user.role === 'Logistician' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400' :
-                        'bg-neutral-100 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-300'
-                      }`}>
+                          'bg-neutral-100 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-300'
+                        }`}>
                         {user.role}
                       </span>
                     </td>
@@ -134,7 +152,7 @@ export function UserManagementTable() {
             </table>
           </div>
           <div className="bg-background-light dark:bg-black/20 p-4 border-t border-neutral-100 dark:border-neutral-800 flex justify-center">
-            <button className="text-sm font-bold text-neutral-500 hover:text-neutral-dark dark:hover:text-white transition-colors">View All 42 Users</button>
+            <button className="text-sm font-bold text-neutral-500 hover:text-neutral-dark dark:hover:text-white transition-colors">View All {filteredUsers.length} Users</button>
           </div>
         </div>
       </section>

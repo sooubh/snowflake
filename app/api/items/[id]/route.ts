@@ -2,8 +2,36 @@ import { NextResponse } from 'next/server';
 import { snowflakeService as azureService } from '@/lib/snowflakeService';
 import { cookies } from 'next/headers';
 import { getUser } from '@/lib/auth';
+import { revalidatePath } from 'next/cache';
 
 type Params = Promise<{ id: string }>;
+
+export async function GET(
+    request: Request,
+    { params }: { params: Params }
+) {
+    try {
+        const { id } = await params;
+
+        const cookieStore = await cookies();
+        const userId = cookieStore.get('simulated_user_id')?.value;
+        const user = userId ? getUser(userId) : null;
+
+        if (!user) {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        }
+
+        const item = await azureService.getItem(id, user.section);
+
+        if (!item) {
+            return NextResponse.json({ error: 'Item not found' }, { status: 404 });
+        }
+
+        return NextResponse.json(item);
+    } catch (error) {
+        return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    }
+}
 
 export async function PUT(
     request: Request,
@@ -28,6 +56,7 @@ export async function PUT(
             return NextResponse.json({ error: 'Item not found or update failed' }, { status: 404 });
         }
 
+        revalidatePath('/dashboard');
         return NextResponse.json(updatedItem);
     } catch (error) {
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });

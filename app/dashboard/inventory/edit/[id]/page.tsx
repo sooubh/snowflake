@@ -1,16 +1,18 @@
 "use client";
 
+export const dynamic = 'force-dynamic';
+
 import { useState, useEffect } from "react";
 import { use } from "react"; // For unwrapping params
 import { motion } from "framer-motion";
 import { Server, Save, CheckCircle, AlertCircle, RefreshCw, ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { StockItem  } from '@/lib/snowflakeService';
+import { StockItem } from '@/lib/snowflakeService';
 
 export default function EditItemPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const router = useRouter();
-  
+
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -27,32 +29,30 @@ export default function EditItemPage({ params }: { params: Promise<{ id: string 
 
   // Fetch Existing Data
   useEffect(() => {
-      async function fetchItem() {
-          try {
-              const res = await fetch("/api/items");
-              if(res.ok) {
-                  const items: StockItem[] = await res.json();
-                  const item = items.find(i => i.id === id);
-                  if(item) {
-                      setFormData({
-                          name: item.name,
-                          category: item.category,
-                          quantity: item.quantity.toString(),
-                          price: item.price.toString(),
-                          unit: item.unit || "",
-                          expiryDate: item.expiryDate || "",
-                      });
-                  } else {
-                      setError("Item not found");
-                  }
-              }
-          } catch(err) {
-              setError("Failed to load item details");
-          } finally {
-              setLoading(false);
-          }
+    async function fetchItem() {
+      try {
+        // Fix: Fetch specific item instead of all items
+        const res = await fetch(`/api/items/${id}`, { cache: 'no-store' });
+        if (res.ok) {
+          const item: StockItem = await res.json();
+          setFormData({
+            name: item.name,
+            category: item.category,
+            quantity: item.quantity.toString(),
+            price: item.price.toString(),
+            unit: item.unit || "",
+            expiryDate: item.expiryDate || "",
+          });
+        } else {
+          setError("Item not found");
+        }
+      } catch (err) {
+        setError("Failed to load item details");
+      } finally {
+        setLoading(false);
       }
-      fetchItem();
+    }
+    fetchItem();
   }, [id]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -68,8 +68,8 @@ export default function EditItemPage({ params }: { params: Promise<{ id: string 
     try {
       // Ensure date is ISO
       const payload = {
-          ...formData,
-          expiryDate: formData.expiryDate ? new Date(formData.expiryDate).toISOString() : undefined
+        ...formData,
+        expiryDate: formData.expiryDate ? new Date(formData.expiryDate).toISOString() : undefined
       };
 
       const res = await fetch(`/api/items/${id}`, {
@@ -82,8 +82,8 @@ export default function EditItemPage({ params }: { params: Promise<{ id: string 
 
       setSuccess(true);
       setTimeout(() => {
-          router.push("/dashboard"); 
-          router.refresh(); 
+        router.push("/dashboard");
+        router.refresh();
       }, 1000);
     } catch (err) {
       setError("Failed to update item.");
@@ -98,26 +98,26 @@ export default function EditItemPage({ params }: { params: Promise<{ id: string 
     <div className="w-full max-w-3xl mx-auto">
       <div className="mb-6 flex items-center gap-4">
         <button onClick={() => router.back()} className="p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-full transition-colors">
-            <ArrowLeft className="w-6 h-6 text-neutral-500" />
+          <ArrowLeft className="w-6 h-6 text-neutral-500" />
         </button>
         <h1 className="text-2xl font-bold text-neutral-800 dark:text-white">Edit Inventory Item</h1>
       </div>
 
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         className="bg-white dark:bg-[#2a2912] border border-neutral-200 dark:border-neutral-700 rounded-3xl p-8 shadow-sm"
       >
         <div className="flex items-center gap-4 mb-8 pb-8 border-b border-neutral-100 dark:border-neutral-800">
-            <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-2xl">
-                <Server className="w-8 h-8 text-blue-600 dark:text-blue-400" />
-            </div>
-            <div>
-                <h2 className="text-xl font-bold text-neutral-800 dark:text-white">
-                    {formData.name || "Item Details"}
-                </h2>
-                <p className="text-neutral-500 text-sm">Update stock levels and metadata</p>
-            </div>
+          <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-2xl">
+            <Server className="w-8 h-8 text-blue-600 dark:text-blue-400" />
+          </div>
+          <div>
+            <h2 className="text-xl font-bold text-neutral-800 dark:text-white">
+              {formData.name || "Item Details"}
+            </h2>
+            <p className="text-neutral-500 text-sm">Update stock levels and metadata</p>
+          </div>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -181,7 +181,7 @@ export default function EditItemPage({ params }: { params: Promise<{ id: string 
                 type="date"
                 name="expiryDate"
                 value={formData.expiryDate ? new Date(formData.expiryDate).toISOString().split('T')[0] : ''}
-                onChange={(e) => setFormData({...formData, expiryDate: e.target.value })}
+                onChange={(e) => setFormData({ ...formData, expiryDate: e.target.value })}
                 className="w-full p-3 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-[#1f1e0b] focus:ring-2 focus:ring-primary outline-none transition-all"
               />
             </div>
@@ -203,30 +203,30 @@ export default function EditItemPage({ params }: { params: Promise<{ id: string 
 
           {error && (
             <div className="bg-red-500/10 border border-red-500/20 text-red-500 px-4 py-3 rounded-xl flex items-center gap-2">
-                <AlertCircle className="w-5 h-5" />
-                {error}
+              <AlertCircle className="w-5 h-5" />
+              {error}
             </div>
           )}
 
           {success && (
             <div className="bg-green-500/10 border border-green-500/20 text-green-500 px-4 py-3 rounded-xl flex items-center gap-2">
-                <CheckCircle className="w-5 h-5" />
-                Updated successfully! Redirecting...
+              <CheckCircle className="w-5 h-5" />
+              Updated successfully! Redirecting...
             </div>
           )}
 
           <div className="pt-4 flex gap-4">
             <button
-                type="button"
-                onClick={() => router.back()}
-                className="flex-1 py-4 rounded-xl bg-neutral-100 hover:bg-neutral-200 dark:bg-neutral-800 dark:hover:bg-neutral-700 text-neutral-700 dark:text-neutral-300 font-medium transition-all"
+              type="button"
+              onClick={() => router.back()}
+              className="flex-1 py-4 rounded-xl bg-neutral-100 hover:bg-neutral-200 dark:bg-neutral-800 dark:hover:bg-neutral-700 text-neutral-700 dark:text-neutral-300 font-medium transition-all"
             >
-                Cancel
+              Cancel
             </button>
             <button
               type="submit"
               disabled={saving}
-              className="flex-[2] py-4 rounded-xl bg-primary hover:bg-primary-dark text-white font-bold shadow-lg shadow-blue-500/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-[2] py-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold shadow-lg shadow-blue-500/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {saving ? (
                 <>

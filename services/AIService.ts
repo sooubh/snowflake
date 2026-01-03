@@ -1,58 +1,20 @@
-import OpenAI from "openai";
+import { snowflakeService } from "@/lib/snowflakeService";
 import { SYSTEM_PROMPT } from "@/lib/aiContext";
 
 // Interface for AI response
 export interface StockInsight {
-    sentiment: "positive" | "negative" | "neutral" | "critical";
+    sentiment: "positive" | "negative" | "neutral" | "critical" | "warning";
     summary: string;
     actionableSuggestion: string;
     affectedItems?: string[];
+    suggestedToolAction?: { tool: string; arguments: any };
 }
 
-export class AzureAIService {
-    private client: OpenAI | null = null;
-    private deploymentName: string = "";
-
-    constructor() {
-        this.initializeClient();
-    }
-
-    private initializeClient() {
-        const endpoint = process.env.AZURE_OPENAI_ENDPOINT?.replace(/\/+$/, ""); // Remove trailing slash
-        const apiKey = process.env.AZURE_OPENAI_API_KEY;
-        this.deploymentName = process.env.AZURE_OPENAI_DEPLOYMENT_NAME || "";
-
-        if (endpoint && apiKey && this.deploymentName) {
-            // Check for placeholders
-            if (endpoint.includes("YOUR_") || apiKey.includes("your_") || this.deploymentName.includes("your_")) {
-                console.warn("⚠️ Azure OpenAI Credentials appear to be placeholders. Please update .env.local with your actual keys.");
-                return;
-            }
-
-            try {
-                this.client = new OpenAI({
-                    apiKey: apiKey,
-                    baseURL: `${endpoint}/openai/deployments/${this.deploymentName}`,
-                    defaultQuery: { "api-version": "2025-01-01-preview" },
-                    defaultHeaders: { "api-key": apiKey },
-                });
-                console.log("✅ Azure OpenAI Client Initialized");
-            } catch (error) {
-                console.error("❌ Failed to initialize Azure OpenAI Client", error);
-            }
-        } else {
-            console.warn("⚠️ Azure OpenAI Credentials missing. AI features will use mock data.");
-        }
-    }
+export class AIService {
+    private model: string = "llama3-70b"; // Snowflake Cortex Model
 
     // Generate a quick insight for the dashboard banner
     async getDashboardInsight(inventoryCtx: string): Promise<StockInsight> {
-        if (!this.client) this.initializeClient();
-
-        if (!this.client) {
-            return this.generateOfflineInsight(inventoryCtx);
-        }
-
         try {
             // Enhanced prompt for "AI-First" decision making
             const prompt = `
@@ -65,60 +27,69 @@ export class AzureAIService {
             3. "Overstock" -> Suggest Sale/Promotion.
             
             Data Snapshot:
-            ${inventoryCtx.substring(0, 5000)} ... (truncated if long)
+            ${inventoryCtx.substring(0, 5000).replace(/'/g, "''")} ... (truncated if long)
 
-            Return JSON:
+            Usage instructions:
+            Return ONLY a valid JSON object. Do not include any markdown formatting.
+            Structure:
             {
                 "sentiment": "critical" | "warning" | "positive" | "neutral",
                 "summary": "Urgent: [Item] is critically low",
                 "actionableSuggestion": "Create PO for 50 units from [Vendor]",
-                "affectedItems": ["Item Name"]
+                "affectedItems": ["Item Name"],
+                "suggestedToolAction": { "tool": "create_purchase_order", "arguments": { "itemName": "Name", "quantity": 50 } } (Optional)
             }
+            
+            Available Tools for "suggestedToolAction":
+            1. create_purchase_order(itemName, quantity, vendor) -> Use for Low Stock.
+            2. navigate_to_page(path) -> Use for 'Check Waste Report' (/reports?tab=waste) or 'Review' (/reports).
             `;
 
-            const completion = await this.client.chat.completions.create({
-                messages: [
-                    { role: "system", content: "You are a precise JSON-only inventory assistant." },
-                    { role: "user", content: prompt }
-                ],
-                model: this.deploymentName,
-                response_format: { type: "json_object" },
-                temperature: 0.2, // Lower temp for more deterministic actions
-            });
+            // Use Snowflake Cortex COMPLETE function
+            // Note: response_format is supported in some regions/models, but prompting for JSON is safer cross-region
+            const sql = `
+                SELECT SNOWFLAKE.CORTEX.COMPLETE(
+                    '${this.model}',
+                    '${prompt}'
+                ) as RESPONSE
+            `;
 
-            const content = completion.choices[0].message.content;
-            if (content) {
-                return JSON.parse(content) as StockInsight;
+            const results = await snowflakeService.runAIQuery(sql);
+
+            if (results && results.length > 0 && results[0].response) {
+                const content = results[0].response;
+                // Clean up markdown if model adds it
+                const cleanContent = content.replace(/```json/g, '').replace(/```/g, '').trim();
+                return JSON.parse(cleanContent) as StockInsight;
             }
-            throw new Error("Empty response from AI");
+            throw new Error("Empty response from Cortex AI");
 
         } catch (error) {
-            console.error("Azure AI Error:", error);
+            console.error("Cortex AI Service Error:", error);
             return this.generateOfflineInsight(inventoryCtx);
         }
     }
 
     // Chat with data
     async chatWithData(userMessage: string, context: string): Promise<string> {
-        if (!this.client) this.initializeClient();
-
-        if (!this.client) {
-            return "I am currently in offline mode. Please configure Azure OpenAI credentials to chat with your real data.";
-        }
-
         try {
-            const completion = await this.client.chat.completions.create({
-                messages: [
-                    { role: "system", content: `${SYSTEM_PROMPT}\n\nData Context:\n${context}` },
-                    { role: "user", content: userMessage }
-                ],
-                model: this.deploymentName,
-                temperature: 0.5,
-            });
-            return completion.choices[0].message.content || "I couldn't process that.";
+            const fullPrompt = `${SYSTEM_PROMPT}\n\nData Context:\n${context.replace(/'/g, "''")}\n\nUser Question:\n${userMessage.replace(/'/g, "''")}`;
+
+            const sql = `
+                SELECT SNOWFLAKE.CORTEX.COMPLETE(
+                    '${this.model}',
+                    '${fullPrompt}'
+                ) as RESPONSE
+            `;
+
+            const results = await snowflakeService.runAIQuery(sql);
+            if (results && results.length > 0 && results[0].response) {
+                return results[0].response;
+            }
+            return "I couldn't process that.";
         } catch (error: any) {
-            console.error("Chat Error:", error);
-            return `Connection Error: ${error.message || "Unknown error"}. Check your .env.local configuration.`;
+            console.error("Cortex Chat Error:", error);
+            return `AI Error: ${error.message || "Unknown error"}. Check Snowflake Cortex availability.`;
         }
     }
 
@@ -210,4 +181,4 @@ export class AzureAIService {
     }
 }
 
-export const azureAIService = new AzureAIService();
+export const aiService = new AIService();

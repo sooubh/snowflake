@@ -596,6 +596,16 @@ export class SnowflakeInventoryService {
     async refreshStoreCache(): Promise<void> {
         console.log('ℹ️ Store cache refresh not needed for Snowflake');
     }
+
+    // --- AI / CORTEX ---
+    async runAIQuery(sqlText: string, binds?: any[]): Promise<any[]> {
+        try {
+            return await this.executeQuery<any>(sqlText, binds);
+        } catch (error) {
+            console.error('Failed to run AI query:', error);
+            return [];
+        }
+    }
 }
 
 export const snowflakeService = new SnowflakeInventoryService();

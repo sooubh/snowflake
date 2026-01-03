@@ -1,6 +1,7 @@
 import { Suspense } from 'react';
 import { DashboardHeader } from './components/DashboardHeader';
 import { AIInsightsBanner } from './components/AIInsightsBanner';
+import { UserProfilePill } from './components/UserProfilePill';
 import { StatsGrid } from './components/StatsGrid';
 import { StoreHealthOverview } from './components/StoreHealthOverview';
 import { AlertsSidebar } from './components/AlertsSidebar';
@@ -12,10 +13,12 @@ import { getStockStatus } from './lib/utils';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
+export const dynamic = 'force-dynamic';
+
 export default async function DashboardPage() {
   const cookieStore = await cookies();
   const userId = cookieStore.get('simulated_user_id')?.value;
-  
+
   if (!userId) {
     redirect('/');
   }
@@ -25,11 +28,11 @@ export default async function DashboardPage() {
 
   // Fetch ALL items in the section at once - NO CHUNKING
   const allItems = await azureService.getAllItems(user.section);
-  
+
   console.log(`📊 Dashboard: Loaded ${Array.isArray(allItems) ? allItems.length : 0} total items for ${user.role} in ${user.section}`);
-  
+
   // Admin sees ALL items in section (all stores), Retailer sees only their own
-  const myItems = user.role === 'admin' 
+  const myItems = user.role === 'admin'
     ? (Array.isArray(allItems) ? allItems.filter(i => i.section === user.section) : [])
     : (Array.isArray(allItems) ? allItems.filter(i => i.ownerId === user.id) : []);
 
@@ -45,7 +48,7 @@ export default async function DashboardPage() {
 
   return (
     <div className="min-h-screen p-4 md:p-6 flex flex-col gap-6">
-      
+
       {/* 1. Full Width AI Insights */}
       <div className="w-full">
         <AIInsightsBanner />
@@ -60,17 +63,9 @@ export default async function DashboardPage() {
               Overview for {user.section} - Showing {myItems.length} items {user.role === 'admin' ? 'from all stores' : 'from your store'}
             </p>
           </div>
-          
+
           <div className="flex items-center gap-3">
-            <div className="bg-white dark:bg-[#1f1e0b] px-4 py-2 rounded-full border border-transparent dark:border-neutral-800 shadow-sm flex items-center gap-3">
-              <div className="size-8 rounded-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center font-bold text-neutral-600 dark:text-neutral-300">
-                {user.name.charAt(0)}
-              </div>
-              <div className="flex flex-col">
-                <span className="text-sm font-bold text-neutral-dark dark:text-white leading-none">{user.name}</span>
-                <span className="text-[10px] text-neutral-400 font-bold uppercase tracking-wider">{user.role}</span>
-              </div>
-            </div>
+            <UserProfilePill user={user} />
           </div>
         </div>
 
@@ -83,7 +78,7 @@ export default async function DashboardPage() {
           <Suspense fallback={<div className="h-96 animate-pulse bg-neutral-100 dark:bg-neutral-800 rounded-3xl" />}>
             <StockHeatmapTable items={myItems} limit={10} />
           </Suspense>
-          
+
           <Suspense fallback={<div className="h-40 animate-pulse bg-neutral-100 dark:bg-neutral-800 rounded-3xl" />}>
             <StoreHealthOverview items={myItems} />
           </Suspense>
