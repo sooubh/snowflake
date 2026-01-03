@@ -29,28 +29,49 @@ graph TD
 
 ## 🛠️ Technology Stack
 
-### Frontend
-| Component | Technology | Reasoning |
-| :--- | :--- | :--- |
-| **Framework** | **Next.js 14** | Best-in-class performance, Server Components, and API routes. |
-| **Language** | **TypeScript** | Type safety ensures standardized data models (Inventory, User). |
-| **Styling** | **Tailwind CSS 4** | Rapid UI development with a modern, utility-first approach. |
-| **State** | **React Hooks** | `useState`, `useEffect` for local responsiveness. |
-| **Icons** | **Lucide & Material** | Modern, clean iconography for a professional look. |
+### Core Framework
+| Component | Technology | Version | Description |
+| :--- | :--- | :--- | :--- |
+| **Framework** | **Next.js** | **16.0** | (Turbopack) High-performance React framework with Server Components and Server Actions. |
+| **Language** | **TypeScript** | **5.x** | Strongly typed JavaScript ensuring reliable data models and interface contracts. |
+| **Runtime** | **Node.js** | **20+** | Server-side runtime environment for Next.js actions. |
 
-### Backend & Database
-| Component | Technology | Reasoning |
+### Frontend & UI
+| Component | Technology | Description |
 | :--- | :--- | :--- |
-| **Runtime** | **Node.js** | Seamless integration with Next.js backend. |
-| **Database** | **Snowflake** | Scalable, secure data warehousing. Handles massive inventory lists effortlessly. |
-| **Driver** | **snowflake-sdk** | Official Node.js driver for high-performance connectivity. |
+| **UI Engine** | **React** | **19.x** | The library for web and native user interfaces. |
+| **Styling** | **Tailwind CSS** | **4.x** | Utility-first CSS framework for rapid, responsive design system implementation. |
+| **Animations** | **Framer Motion** | Declarative animations for smooth page transitions and micro-interactions. |
+| **Icons** | **Lucide React** | Consistent, lightweight SVG icons. |
+| **Charts** | **Recharts** & **Chart.js** | Composable charting libraries for data visualization (Sales trends, Stock levels). |
+| **Themes** | **next-themes** | Robust dark mode/light mode switching support. |
+| **Markdown** | **react-markdown** | Rendering AI-generated responses and documentation safely. |
 
-### Artificial Intelligence
-| Component | Technology | Reasoning |
+### Backend & Data
+| Component | Technology | Description |
 | :--- | :--- | :--- |
-| **Reasoning Engine** | **Snowflake Cortex** | Serverless AI. No external API keys (like OpenAI) required. Data never leaves the Snowflake environment. |
-| **Model** | **Llama 3 (70B)** | High intelligence, excellent for complex SQL generation and reasoning. |
-| **Mode** | **JSON Mode** | We force the AI to verify structured JSON for predictable app behavior. |
+| **Database** | **Snowflake** | Cloud Data Platform. Stores all Inventory, Transaction, and User Activity data. |
+| **Driver** | **snowflake-sdk** | Official Node.js driver for connecting Next.js to Snowflake. |
+| **Validation** | **Zod** | Schema validation for forms and API data inputs. |
+| **AI Engine** | **Snowflake Cortex** | Integrated Serverless AI service access via SQL (`SNOWFLAKE.CORTEX.COMPLETE`). |
+
+### Utilities
+| Component | Technology | Description |
+| :--- | :--- | :--- |
+| **PDF Generation** | **jspdf** & **autotable** | Generating downloadable invoice PDFs client-side. |
+| **CSV/Excel** | **papaparse** & **xlsx** | Parsing and exporting data for reports. |
+| **Class Utils** | **clsx** & **tailwind-merge** | conditionally merging Tailwind class names. |
+| **Date Time** | **Native Date** | Handling ISO strings for database timestamps. |
+
+---
+
+## 🤖 AI Integration Details
+
+The project relies heavily on **Snowflake Cortex** for intelligence.
+
+*   **Model**: `llama3-70b` (accessible via Cortex).
+*   **Integration**: Direct SQL calls from the backend Service layer.
+*   **Context**: Data is retrieved from Snowflake tables (`ITEMS`, `ACTIVITIES`) and formatted into a text prompt before being sent to the LLM.
 
 ---
 
@@ -59,17 +80,21 @@ graph TD
 ```bash
 📦 snowflake-inventory
 ├── 📂 app                 # Next.js App Router
-│   ├── 📂 api             # API Routes (GET/POST endpoints)
-│   ├── 📂 dashboard       # Main Application Views (Inventory, Settings)
-│   ├── 📂 actions         # Server Actions (Chat, AI logic)
-│   └── page.tsx           # Login Page
+│   ├── 📂 api             # API Routes (Search, etc.)
+│   ├── 📂 actions         # Server Actions (Inventory CRUD, AI Chat)
+│   ├── 📂 dashboard       # Main Application Views
+│   ├── 📂 reports         # Reporting & Analytics Views
+│   ├── 📂 styles          # Global Styles
+│   └── page.tsx           # Landing/Login Page
+├── 📂 components          # Reusable UI Components
+│   ├── StoreSelector.tsx  # Role-based store switcher
+│   ├── GlobalSearch.tsx   # Omni-search bar
+│   └── ...
 ├── 📂 lib                 # Shared Utilities
-│   ├── auth.ts            # User & Role Definitions
-│   ├── snowflake.ts       # DB Connection Logic
-│   └── aiContext.ts       # Context Generators for AI
-├── 📂 scripts             # Database Scripts
-│   ├── create-tables.sql  # Schema Definition
-│   └── seed-data.ts       # Inventory Seeding Logic
-├── 📂 documentation       # YOU ARE HERE
-└── .env.local             # Environment Secrets
+│   ├── snowflakeService.ts # Main Snowflake Service Class (Singleton)
+│   ├── auth.ts            # Simulated Auth & Roles
+│   ├── aiContext.ts       # AI Prompt Engineering & Context Builders
+│   └── exportUtils.ts     # Helpers for PDF/CSV Data export
+├── 📂 documentation       # Project Documentation
+└── .env.local             # Environment Secrets (Credentials)
 ```
